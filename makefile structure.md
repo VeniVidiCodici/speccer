@@ -2,7 +2,7 @@ The project is initially built with Code::Blocks, which automatically generates 
 
 The C::B's build log output for object files currently looks like this:
 
-*g++ -std=c++11 -pthread -I/usr/include/gtk-2.0 -I/usr/lib/i386-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/lib/i386-linux-gnu/wx/include/gtk2-unicode-3.0-unofficial -I/usr/include/wx-3.0-unofficial -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -pthread -lwx_gtk2u_unofficial_gl-3.0 -g -Iinclude -I/usr/include -Iinclude/datatypes -Iinclude -c /home/a/Documents/projects/speccer/src/src/drawable.cpp -o obj/Debug/src/drawable.o*
+*g++ -std=c++11 -pthread -I/usr/include/gtk-2.0 -I/usr/lib/i386-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz -I/usr/lib/i386-linux-gnu/wx/include/gtk2-unicode-3.0-unofficial -I/usr/include/wx-3.0-unofficial -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -pthread -lwx_gtk2u_unofficial_gl-3.0 -g -Iinclude -I/usr/include -Iinclude/datatypes -Iinclude -c /speccer/src/src/drawable.cpp -o obj/Debug/src/drawable.o*
 
 And for linking it looks like this:
 
