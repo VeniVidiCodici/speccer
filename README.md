@@ -34,7 +34,7 @@ The style editor, as the name implies, is used to create user defined styles(tec
 
 **Current issues**
 
-* Instability - the program is known to crash upon window closure, window reopening (for the second), moving the view after window reopening and very rarely in other cases. The cause of almost all, if not all, of these crashes is known to stem from wxWidgets and the (mis)use of some of its functions. However, as the crashes occur upon window close (or later) and not immediately after the faulty code, it's very difficult to trace the ultimate cause.<br/>Although these crashes normally do not affect operation, it's still advised to save regularly and create backup files, as the program hasn't yet been tested extensively.
+* Instability - the program is known to crash upon window closure, window reopening (for the second time), moving the view after window reopening and very rarely in other cases. The cause of almost all, if not all, of these crashes is known to stem from wxWidgets and the (mis)use of some of its functions. However, as the crashes occur upon window close (or later) and not immediately after the faulty code, it's very difficult to trace the ultimate cause.<br/>Although these crashes normally do not affect operation, it's still advised to save regularly and create backup files, as the program hasn't yet been tested extensively.
 
 * Speed - close to no optimisation has been done yet for working with many nodes. Currently it begins to lag only after merely few dozen of branches have been placed. One of the highest priority goals for the next release is to make it work with hundreds of nodes without any noticeable lag.
 
