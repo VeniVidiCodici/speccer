@@ -1,0 +1,6 @@
+The GPL v3 license only covers the source code written for the program, and not necessarily any 3rd party libraries or pieces of code in it. This software makes use of the following:
+
+	-OpenGL 1.4, which is under Open source license - for use of the S.I. This is a Free Software License B closely modeled on BSD, X, and Mozilla licenses.
+	-Simple OpenGL Image Library (libSOIL), which is in the public domain.
+	-FreeType, which is under The FreeType Project LICENSE: https://git.savannah.gnu.org/cgit/freetype/freetype2.git/plain/docs/FTL.TXT
+	-Chris Tsang's Drawing nearly perfect 2D line segments in OpenGL, which is under The Code Project Open License (CPOL): https://www.codeproject.com/info/cpol10.aspx
