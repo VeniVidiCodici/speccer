@@ -169,11 +169,11 @@ Some sort of object relationship diagram should be published in the future. Inst
 * User input values can be created by writing the name of the desired value between square brackets, e.g. [age], [extinction]. These input values should be numbers only.
 * If an invalid or uncomputable expression is met, it evaluates to 0 and evaluation halts. Note that only it returns 0 and not the whole formula. So, for example, *100 + pi/0 + 10* returns 100.
 
-**Text fields syntax **
+**Text fields syntax**
 
 Only in a style edit mode, to let the user have a new text field in tree edit mode, surround that field in square brackets. E.g. *Name: [name]* will let the user input the value of *name* while in tree edit mode, and that will substitute *[name]*. More than one text field is possible per text. If a text doesn't have any text fields, the text will be static for all branches.
 
-**Make other fields for user input **
+**Make other fields for user input**
 
 Again while in style edit mode, right clicking over a image field or a color field label will let you input a surface name for that respective data. Later in tree edit mode, the user will be able to input unique image or color datas per branch.
 
