@@ -62,7 +62,7 @@ The interface should be intuitive. It would be helpful to read the section *inte
 
 A list of things planned for future versions. Note that none of this has any ETA.
 
-  v1.0.0.1
+  v1.0.0.X - won't necessarily be published, only if the need arises. It's basically for two things:
 *   Critical bug fixes
 *   Features taking one or two lines of code
 
