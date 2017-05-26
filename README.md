@@ -63,8 +63,8 @@ A list of things planned for future versions. Note that none of this has any ETA
 *    Optimise for speed - ability to work comfortably with hundreds of branches
 *    Scale text up & down when zooming
 *    More basic shapes:
-  * -Fix drawing of composite formulas when used as drawables
-  * -Arrow - as a composite
+  * Fix drawing of composite formulas when used as drawables
+  * Arrow - as a composite
 *    Fix segfault on reopening the style editor (& moving the plotter)
 *    Make it possible for each branch to pick its own node out of the available nodes in the style
 *    NURBS curve as a basic shape
