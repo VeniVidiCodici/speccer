@@ -139,7 +139,7 @@ Some sort of object relationship diagram should be published in the future. Inst
 
 **Datamodel** represents a style. It contains a collection of nodes (dataholders). The default nodes is called *Leaf* and there should always be one per style. In future, branches will be able to be different nodes and there'll be one control node called *global* to define the overall look and feel of the style.
 
-**DrawingAPI and UIAPI** are abstract classes representing the drawing plot and the user interface, respectivelly. The reason for their existance is so that the core program is independant from the current way of implementing the drawing and UI and that the change of both is as simple as creating new classes inheriting from those. **No classes, except for colorconv(see below) and those inheriting from DrawingAPI and UIAPI, should make any assumptions as to what technologies are used for drawing or user interface.**
+**DrawingAPI and UIAPI** are abstract classes representing the drawing plot and the user interface, respectively. The reason for their existance is so that the core program is independant from the current way of implementing the drawing and UI and that the change of both is as simple as creating new classes inheriting from those. **No classes, except for colorconv(see below) and those inheriting from DrawingAPI and UIAPI, should make any assumptions as to what technologies are used for drawing or user interface.**
 
 **Oglplotter** is the current realisation of *DrawingAPI*. It uses OpenGL 1.4 to draw the *drawables*.
 
