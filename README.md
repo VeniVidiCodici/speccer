@@ -61,8 +61,8 @@ A list of things planned for future versions. Note that none of this has any ETA
 
   v1.0.1
 *    Optimise for speed - ability to work comfortably with hundreds of branches
-*    Scale text up & down when zooming
-*    More basic shapes:
+* Scale text up & down when zooming
+* More basic shapes:
   * Fix drawing of composite formulas when used as drawables
   * Arrow - as a composite
 *    Fix segfault on reopening the style editor (& moving the plotter)
@@ -71,7 +71,7 @@ A list of things planned for future versions. Note that none of this has any ETA
 *    Completely get rid of wxNewId() - it's deprecated
 *    Get rid of wxToolBarBase::AddTool() - it's deprecated
 *    When saving and loading convert underscore to space and viceversa
-*    Bool values to control visibility of drawables
+* Bool values to control visibility of drawables
   * And to be able to be interpreted as 1's and 0's in formulas
 *    Display style names instead of file paths in the tree editor - with underscores converted to spaces
 *    Consecutive transformations between nodes - for spiraling and and zooming in trees
@@ -79,7 +79,7 @@ A list of things planned for future versions. Note that none of this has any ETA
 *    Custom icons for placing drawables
 *    Detect when changes are made to the currently open file
 *    Fix a bug where after loading any applied transformation matrices are not displayed in the menu as such
-*    Fix an issue where font name in font picker in style editor is no longer displayed after text deselection
+* Fix an issue where font name in font picker in style editor is no longer displayed after text deselection
   * Fix minor bug causing label shift and occasional item deselection when shuffling placed drawables
 *    Red formula input fields upon incorrect syntax
 *    Toolbar in style editor
@@ -87,12 +87,12 @@ A list of things planned for future versions. Note that none of this has any ETA
 *    Vertex and shape hints (which one is selected) when in style edit mode
 *    Fix short textboxes when first time displaying
 *    Fix widths in list controls
-*    Acquire screenshots
-  *      Of the whole tree with margins
-  *      Of a selected area
+* Acquire screenshots
+  * Of the whole tree with margins
+  * Of a selected area
 
   v1.1
-*    Global node to set background, timescale & other constant & one time drawn stuff
+* Global node to set background, timescale & other constant & one time drawn stuff
   * Special syntax for drawing of repeating elements
 *    Check for matrix & node loops when loading
 *    Calculate transformed coordinates
