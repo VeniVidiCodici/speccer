@@ -12,7 +12,7 @@ Other than not being completely stable and optimised for speed it represents a m
 
 * Installation
 * Usage
-* Current issues
+* Known issues
 * To Do
 * Contributing
 * Internal structure
@@ -37,13 +37,17 @@ The style editor, as the name implies, is used to create user defined styles(tec
 
 *To be expanded.*
 
-**Current issues**
+**Known issues**
 
 * Instability - the program is known to crash upon window closure, window reopening (for the second time), moving the view after window reopening and very rarely in other cases. The cause of almost all, if not all, of these crashes is known to stem from wxWidgets and the (mis)use of some of its functions. However, as the crashes occur upon window closure (or later) and not immediately after the faulty code, it's very difficult to trace the ultimate cause.<br/>Although these crashes normally do not affect operation, it's still advised to save regularly and create backup files, as the program hasn't yet been tested extensively.
 
 * Speed - close to no optimisation has been done yet for working with many nodes. Currently it begins to lag only after merely few dozen of branches have been placed. One of the highest priority goals for the next release is to make it work with hundreds of nodes without any noticeable lag.
 
+* Images - currently images are only able to be imported if they're in the same folder as the saved file - **the document has to be saved first!** Also, paths to images are stored in the saved file, instead of images per se, so if the image files are renamed, moved or deleted, they won't be loaded anymore in the saved file.
+
 * Incomplete support for composite shapes - currently formulas for composite shapes don't always compute correctly in the tree editor, and the usage of composite shapes within composite shapes hasn't been tested at all.
+
+* Some other minor bugs and issues mentioned in the to do list.
 
 * Other currently unimplemented functionality:
   * Different node type per branch
@@ -117,7 +121,31 @@ Contributing is most appreciated when done for things planned for future version
 
 **Internal structure**
 
-*To be expanded.*
+Some sort of object relationship diagram should be published in the future. Instead of it, for now there's this description of some of the classes:
+
+**Datapoint** represents the atmoic data pieces stored in the program. They can be texts (textdata), numbers (numberdata), images (imagedata) among others.
+
+**Formuladata** is a special kind of *datapoint* that serves mostly for determining the size of location of various elements. As its name implies, it contians formulas instead of bare numbers.
+
+**Formulaparses** serves to parse the formulas contained by various instances of *formuladata*, among some minor auxiliary functionalities.
+
+**Shape** represents the actual things to be drawn by the program. Shapes are e.g. circles, rectangles, texts, images among others. There are four control shapes (root, anchor, bounding box, branching point) to aid the drawing of trees and nodes and one shape for storing transformations (transformation matrix). Unlike datapoints, there's one class for all shapes.
+
+**Composite** contains a collection of shapes to quickly build repeeating visual elements, such as arrows, textboxes and others.
+
+**Drawable** is an abstract class that represents the concept of anything that is able to be drawn by the program. It is inherited by *shape* and *composite*.
+
+**Dataholder** represents a node. Just like a composite, it has a collection of drawables to draw. It's a type of composite, but it doesn't inherit from it, partly because this was realised too late in production, and partly because it shouldn't inherit from *drawable*.
+
+**Datamodel** represents a style. It contains a collection of nodes (dataholders). The default nodes is called *Leaf* and there should always be one per style. In future, branches will be able to be different nodes and there'll be one control node called *global* to define the overall look and feel of the style.
+
+**DrawingAPI and UIAPI** are abstract classes representing the drawing plot and the user interface, respectivelly. The reason for their existance is so that the core program is independant from the current way of implementing the drawing and UI and that the change of both is as simple as creating new classes inheriting from those. **No classes, except for colorconv(see below) and those inheriting from DrawingAPI and UIAPI, should make any assumptions as to what technologies are used for drawing or user interface.**
+
+**Oglplotter** is the current realisation of *DrawingAPI*. It uses OpenGL 1.4 to draw the *drawables*.
+
+**Styleframe and treeframe** are the current realisations of *UIAPI* for the two program modes. They use WxWidgets 3.0.
+
+**Tree** is used to store the tree data in tree edit mode, **branch** for branch data. **Colorconv** is an auxiliary class to store colours in a drawing technology-independant way and convert colours between various types of storage. Finally, **serialisable** is an abstract class used for the saving/loading functionality. Any program data that saves and loads inherits from it.
 
 **Credits**
 
