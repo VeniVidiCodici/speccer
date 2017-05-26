@@ -158,7 +158,7 @@ Some sort of object relationship diagram should be published in the future. Inst
 **Formula syntax**
 
 * They mostly take the shape of standard mathematical expressions - numbers, the four operators + - / \*, brackets - with some additions.
-* ^ _ are two special operators to take respectively the maximum and minimum of two numbers. They have the same order of precedence and multiplication and division.
+* ^ _ are two special operators to take respectively the maximum and minimum of two numbers. They have the same order of precedence as multiplication and division.
 * There are three built in constants: pi, tau (double of pi) and phi (the golden ratio).
 * There are also some per bracnh constants to help with the layout of the tree:
   * sc, sw, sh - sibling count, total width and total height. Note that the width and height of a branch is only really the width and height of its bounding box. Its position is the position of its root, which coincides with the branching point of its parent, or with (0, 0) if its the root branch.
