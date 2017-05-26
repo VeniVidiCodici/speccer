@@ -16,6 +16,9 @@ Other than not being completely stable and optimised for speed it represents a m
 * To Do
 * Contributing
 * Internal structure
+* Formula syntax
+* Text fields syntax
+* Make other fields for user input
 * Credits
 * License
 
@@ -35,7 +38,7 @@ Most of the work occurs in the tree editor, where the actual trees are being bui
 
 The style editor, as the name implies, is used to create user defined styles(technically the prebuilt styles are no different than the user defined styles). The style editor also has a submode of operation, used to make new composite shapes.
 
-*To be expanded.*
+The interface should be intuitive. It would be helpful to read the section *internal structure* to read on terms and concepts such as *composite*, *formula* and *node*. Also read the section *formula syntax* to read on how to write formulas in style edit mode.
 
 **Known issues**
 
@@ -146,6 +149,33 @@ Some sort of object relationship diagram should be published in the future. Inst
 **Styleframe and treeframe** are the current realisations of *UIAPI* for the two program modes. They use WxWidgets 3.0.
 
 **Tree** is used to store the tree data in tree edit mode, **branch** for branch data. **Colorconv** is an auxiliary class to store colours in a drawing technology-independant way and convert colours between various types of storage. Finally, **serialisable** is an abstract class used for the saving/loading functionality. Any program data that saves and loads inherits from it.
+
+**Formula syntax**
+
+* They mostly take the shape of standard mathematical expressions - numbers, the four operators + - / \*, brackets - with some additions.
+* ^ _ are two special operators to take respectively the maximum and minimum of two numbers. They have the same order of precedence and multiplication and division.
+* There are three built in constants: pi, tau (double of pi) and phi (the golden ratio).
+* There are also some per bracnh constants to help with the layout of the tree:
+  * sc, sw, sh - sibling count, total width and total height. Note that the width and height of a branch is only really the width and height of its bounding box. Its position is the position of its root, which coincides with the branching point of its parent, or with (0, 0) if its the root branch.
+  * dc, dw, dh - descendant count, total width and total height.
+  * udc, udw, udh - ultimate descendant count, total width and total height. Ultimate as in only of those (in)direct descendants that don't have descendants themselves. If the node doesn't have any descendants, udc is 1 and udw and udh are its own width and height.
+  * n is represents the value of whichth the node is in its parent's descendant hierarchy. E.g. if a node has five descendants, the first one has n of 1, the second one of 2, the third one of 3, etc.
+  * pc, pw, ph - preceding sibling count, total width and total height - only of those siblings with n lesser than the node's own n.
+  * In general, the formula for a node's vertical position is *ph + pc\*10 + (udh + udc\*10 - sh - sc\*10)/2*, where 10 is the distance between sibling nodes in pixels. If the tree is organised top-down isntead, the formula for a node's horizontal position is *pw + pc\*10 + (udw + udc\*10 - sw - sc\*10)/2*.
+* There are the following built in functions: sin(), cos(), tan(), cotan(), asin(), acos(), atan(), acotan(), round(), sqrt() and abs().
+* The x and y coordinates and width and height of *drawables* can be taken by writing the respective drawable's name between angle brackets, followed by one of the letters x, y, w and h, e.g. \<rectangle\>x, \<text\>w, \<second circle\>h.
+  * These are only absolute coordinates and sizes, i.e. before any transformations are applied. In the future, transformed coordinates will also be able to be used in formulas.
+  * Beware of cyclic dependancies. For example, if a rectangle's width depends on \<circle\>x and a circle's x position depends on \<rectangle\>w, neither would be calculated correctly, as they both rely on the other one being calculated first. The order of drawables in the drawable list in style edit mode is the order in which drawable formulas are paresd.
+* User input values can be created by writing the name of the desired value between square brackets, e.g. [age], [extinction]. These input values should be numbers only.
+* If an invalid or uncomputable expression is met, it evaluates to 0 and evaluation halts. Note that only it returns 0 and not the whole formula. So, for example, *100 + pi/0 + 10* returns 100.
+
+**Text fields syntax **
+
+Only in a style edit mode, to let the user have a new text field in tree edit mode, surround that field in square brackets. E.g. *Name: [name]* will let the user input the value of *name* while in tree edit mode, and that will substitute *[name]*. More than one text field is possible per text. If a text doesn't have any text fields, the text will be static for all branches.
+
+**Make other fields for user input **
+
+Again while in style edit mode, right clicking over a image field or a color field label will let you input a surface name for that respective data. Later in tree edit mode, the user will be able to input unique image or color datas per branch.
 
 **Credits**
 
