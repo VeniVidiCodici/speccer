@@ -45,8 +45,13 @@ The interface should be intuitive. It would be helpful to read the section *inte
 * Instability - the program is known to crash upon window closure, window reopening (for the second time), moving the view after window reopening and very rarely in other cases. The cause of almost all, if not all, of these crashes is known to stem from wxWidgets and the (mis)use of some of its functions. However, as the crashes occur upon window closure (or later) and not immediately after the faulty code, it's very difficult to trace the ultimate cause.<br/>Although these crashes normally do not affect operation, it's still advised to save regularly and create backup files, as the program hasn't yet been tested extensively.
 
 * Speed - close to no optimisation has been done yet for working with many nodes. Currently it begins to lag only after merely few dozen of branches have been placed. One of the highest priority goals for the next release is to make it work with hundreds of nodes without any noticeable lag.
-
+  * One minor source of lag, but not a dealbreaker, is parsing all of the formulas. This will ultimately have to be solved, but it isn't a priority for now.
+  * A major source of lag, though not the only one, is *FT_Load_Char*. Caching would solve the problem.
+  * Besides that there seems to be a slightly bigger, still unidentified, source of lag.
+  
 * Images - currently images are only able to be imported if they're in the same folder as the saved file - **the document has to be saved first!** Also, paths to images are stored in the saved file, instead of images per se, so if the image files are renamed, moved or deleted, they won't be loaded anymore in the saved file.
+
+* Text fields and other input controls are sometimes created minimized or become minimized. Maximizing and then unmaximizing (or the other way around) the window solves the issue.
 
 * Incomplete support for composite shapes - currently formulas for composite shapes don't always compute correctly in the tree editor, and the usage of composite shapes within composite shapes hasn't been tested at all.
 
