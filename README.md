@@ -21,7 +21,7 @@ Other than not being completely stable and optimised for speed it represents a m
 
 **Installation**
 
-You can download the program from *executables/<your OS>/*
+You can download the program from *executables/\<your OS\>/*
 
 No instalation is required, just copy the appropriate for your OS executable along with all its accompanying folders and files. Or just download the respective .zip and unarchive it.
 
