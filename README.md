@@ -127,7 +127,7 @@ Some sort of object relationship diagram should be published in the future. Inst
 
 **Formuladata** is a special kind of *datapoint* that serves mostly for determining the size of location of various elements. As its name implies, it contians formulas instead of bare numbers.
 
-**Formulaparses** serves to parse the formulas contained by various instances of *formuladata*, among some minor auxiliary functionalities.
+**Formulaparser** serves to parse the formulas contained by various instances of *formuladata*, among some minor auxiliary functionalities.
 
 **Shape** represents the actual things to be drawn by the program. Shapes are e.g. circles, rectangles, texts, images among others. There are four control shapes (root, anchor, bounding box, branching point) to aid the drawing of trees and nodes and one shape for storing transformations (transformation matrix). Unlike datapoints, there's one class for all shapes.
 
