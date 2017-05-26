@@ -123,7 +123,7 @@ Contributing is most appreciated when done for things planned for future version
 
 Some sort of object relationship diagram should be published in the future. Instead of it, for now there's this description of some of the classes:
 
-**Datapoint** represents the atmoic data pieces stored in the program. They can be texts (textdata), numbers (numberdata), images (imagedata) among others.
+**Datapoint** represents the atomic data pieces stored in the program. They can be texts (textdata), numbers (numberdata), images (imagedata) among others.
 
 **Formuladata** is a special kind of *datapoint* that serves mostly for determining the size of location of various elements. As its name implies, it contians formulas instead of bare numbers.
 
