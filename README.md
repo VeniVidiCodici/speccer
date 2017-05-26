@@ -55,16 +55,16 @@ The style editor, as the name implies, is used to create user defined styles(tec
 
 A list of things planned for future versions. Note that none of this has any ETA.
 
-    v1.0.0.1
+  v1.0.0.1
 *   Critical bug fixes
 *   Features taking one or two lines of code
 
-    v1.0.1
+  v1.0.1
 *    Optimise for speed - ability to work comfortably with hundreds of branches
 *    Scale text up & down when zooming
 *    More basic shapes:
-  *         -Fix drawing of composite formulas when used as drawables
-  *         -Arrow - as a composite
+  * -Fix drawing of composite formulas when used as drawables
+  * -Arrow - as a composite
 *    Fix segfault on reopening the style editor (& moving the plotter)
 *    Make it possible for each branch to pick its own node out of the available nodes in the style
 *    NURBS curve as a basic shape
@@ -72,7 +72,7 @@ A list of things planned for future versions. Note that none of this has any ETA
 *    Get rid of wxToolBarBase::AddTool() - it's deprecated
 *    When saving and loading convert underscore to space and viceversa
 *    Bool values to control visibility of drawables
-  *      And to be able to be interpreted as 1's and 0's in formulas
+  * And to be able to be interpreted as 1's and 0's in formulas
 *    Display style names instead of file paths in the tree editor - with underscores converted to spaces
 *    Consecutive transformations between nodes - for spiraling and and zooming in trees
 *    Bold & italic for text
@@ -80,7 +80,7 @@ A list of things planned for future versions. Note that none of this has any ETA
 *    Detect when changes are made to the currently open file
 *    Fix a bug where after loading any applied transformation matrices are not displayed in the menu as such
 *    Fix an issue where font name in font picker in style editor is no longer displayed after text deselection
-  *      Fix minor bug causing label shift and occasional item deselection when shuffling placed drawables
+  * Fix minor bug causing label shift and occasional item deselection when shuffling placed drawables
 *    Red formula input fields upon incorrect syntax
 *    Toolbar in style editor
 *    Fix line drawing for angles less than or equal to 90 degrees
@@ -91,9 +91,9 @@ A list of things planned for future versions. Note that none of this has any ETA
   *      Of the whole tree with margins
   *      Of a selected area
 
-    v1.1
+  v1.1
 *    Global node to set background, timescale & other constant & one time drawn stuff
-  *      Special syntax for drawing of repeating elements
+  * Special syntax for drawing of repeating elements
 *    Check for matrix & node loops when loading
 *    Calculate transformed coordinates
 *    Allow to use composite shapes within composite shapes
