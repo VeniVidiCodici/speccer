@@ -13,6 +13,7 @@ Other than not being completely stable and optimised for speed it represents a m
 * Installation
 * Usage
 * Current issues
+* To Do
 * Contributing
 * Internal structure
 * Credits
@@ -20,7 +21,10 @@ Other than not being completely stable and optimised for speed it represents a m
 
 **Installation**
 
+You can download the program from *executables/<your OS>/*
+
 No instalation is required, just copy the appropriate for your OS executable along with all its accompanying folders and files. Or just download the respective .zip and unarchive it.
+
 **For Windows you may also need to have *mingwm10.dll* in the program's folder.**
 
 **Usage**
@@ -47,9 +51,69 @@ The style editor, as the name implies, is used to create user defined styles(tec
   * Calculation and usage of transformed coordinates
   * Acquiring screenshots of trees
 
+**To Do**
+
+A list of things planned for future versions. Note that none of this has any ETA.
+
+    v1.0.0.1
+*   Critical bug fixes
+*   Features taking one or two lines of code
+
+    v1.0.1
+*    Optimise for speed - ability to work comfortably with hundreds of branches
+*    Scale text up & down when zooming
+*    More basic shapes:
+  *         -Fix drawing of composite formulas when used as drawables
+  *         -Arrow - as a composite
+*    Fix segfault on reopening the style editor (& moving the plotter)
+*    Make it possible for each branch to pick its own node out of the available nodes in the style
+*    NURBS curve as a basic shape
+*    Completely get rid of wxNewId() - it's deprecated
+*    Get rid of wxToolBarBase::AddTool() - it's deprecated
+*    When saving and loading convert underscore to space and viceversa
+*    Bool values to control visibility of drawables
+  *      And to be able to be interpreted as 1's and 0's in formulas
+*    Display style names instead of file paths in the tree editor - with underscores converted to spaces
+*    Consecutive transformations between nodes - for spiraling and and zooming in trees
+*    Bold & italic for text
+*    Custom icons for placing drawables
+*    Detect when changes are made to the currently open file
+*    Fix a bug where after loading any applied transformation matrices are not displayed in the menu as such
+*    Fix an issue where font name in font picker in style editor is no longer displayed after text deselection
+  *      Fix minor bug causing label shift and occasional item deselection when shuffling placed drawables
+*    Red formula input fields upon incorrect syntax
+*    Toolbar in style editor
+*    Fix line drawing for angles less than or equal to 90 degrees
+*    Vertex and shape hints (which one is selected) when in style edit mode
+*    Fix short textboxes when first time displaying
+*    Fix widths in list controls
+*    Acquire screenshots
+  *      Of the whole tree with margins
+  *      Of a selected area
+
+    v1.1
+*    Global node to set background, timescale & other constant & one time drawn stuff
+  *      Special syntax for drawing of repeating elements
+*    Check for matrix & node loops when loading
+*    Calculate transformed coordinates
+*    Allow to use composite shapes within composite shapes
+*    Menu shortcuts
+*    Remake the interface with floatable subwindows & toolbars + everything to be in one window
+*    Group properties and global variables in subgroups
+*    Optional popup windows for entering formulas & text
+*    Make collapsable groups of nodes for clade groupings
+*    Optimize for speed and small file sizes for work with 1000s of nodes
+*    Undo & redo functionality ?
+*    Copy & paste
+
 **Contributing**
 
-*To be expanded.*
+Contributing is most appreciated when done for things planned for future versions, but other relevant and useful contributions are also welcome. Even if you don't know how to program, you can still help:
+* The program could use better icons.
+* Icons will also be used in the style editor, for the different shape types and one for composites.
+* The program itself needs an icon, which will double serve as logo.
+* More default styles are also welcome, as long as they look well, handle edge cases and can be used for multiple purposes (are not made for one specific thing only).
+* When the relevant functionality is more robust - more default composite shapes.
 
 **Internal structure**
 
@@ -57,8 +121,8 @@ The style editor, as the name implies, is used to create user defined styles(tec
 
 **Credits**
 
-*To be expanded.*
+See /license/Special cases.txt for a list of 3rd party code used.
 
 **License**
 
-GNU GPLv3 License
+GNU GPLv3 License - Located in /license/GNU General Public License version 3.txt
