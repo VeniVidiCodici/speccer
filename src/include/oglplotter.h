@@ -100,6 +100,13 @@ struct texture
     texture (unsigned char * i_, int w_, int h_):t(0), w(w_), h(h_), i(i_){}
     texture ():t(0), w(1), h(1), i(nullptr){}
 };
+/*
+struct charcache
+{
+    double advancex, advancey;
+    float bmleft, bmtop, bmwidth, bmheight;
+    bm;
+};*/
 
 typedef struct Vertex vertex;
 

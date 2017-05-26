@@ -257,8 +257,10 @@ void OGLplotter::redraw()
 }
 void OGLplotter::drawForBranch(branch * br)
 {
+    //return ;
     calcCoordsForBranch(br);
     f->setBranch(br);
+    //return ;
     if (nodes->getCurrentStyle()->getNodeByName(br->getNode())==nullptr)
         return;
     drawable * brp = nodes->getCurrentStyle()->getNodeByName(br->getNode())->getShapeByType(shape::anchor);
@@ -272,6 +274,8 @@ void OGLplotter::drawForBranch(branch * br)
         drawDrawable(brp, tfm);
         glPopMatrix();
     }
+
+    //return ;
 
     for(drawable * obj: nodes->getCurrentStyle()->getNodeByName(br->getNode())->getAllDrawables())
     {
@@ -354,9 +358,9 @@ void OGLplotter::calcCoordsForBranch(branch * br)
     {
         if (obj->isSimplex())
         {
-            shape * sh = (shape *)obj;
+            //shape * sh = (shape *)obj;
             brdata = br;
-            shape::shapeType st = sh->getType();
+            //shape::shapeType st = sh->getType();
         }
         //glPushMatrix();
         //identity();
@@ -499,6 +503,7 @@ dataPoint * OGLplotter::getSurfaceDataPoint(dataPoint * ofThisOne)
 
 void OGLplotter::setDrawableCoordinates(drawable * drawn,Matrix Transform, bool globvar)
 {
+    //return ; /// this function can use some optimisation
     if (!drawn->isSimplex())
     {
         //applyTransformationHierarchy((matrixData *)((composite *)drawn)->getPropertyByName("tfmatrix"));
@@ -797,18 +802,6 @@ void OGLplotter::setDrawableCoordinates(drawable * drawn,Matrix Transform, bool 
                 //applyTransformationHierarchy((matrixData *)drawnShape->getPropertyByName("tfmatrix"));
                 if (brdata!=nullptr&&tex!=nullptr)
                 {
-                    /*std::string txt = tex->getData();
-                    std::string toBeSet = f->getAPropertyFromText(txt);
-                    if (toBeSet!="")
-                    {
-                        dataPoint * tds = brdata->getProperty(toBeSet,dataPoint::text);
-                        if (tds!=nullptr)
-                        if (tds->getType()==dataPoint::text)
-                        {
-                            std::string newstr = ((textData *) tds)->getData();
-                            label = f->applyPropertyToText(label, toBeSet, newstr);
-                        }
-                    }*/
                     std::string txt = tex->getData();
                     std::vector<std::string> toBeSet = f->getTagsFromText(txt);
                     if (toBeSet.size()>0)
@@ -1079,6 +1072,8 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
             _p.push_back(vertex(testXmin,testYmax,0, 1, 0, 1));
             oglLine(_p, 5.0, true);
             }*/
+        //if (drawnShape->getType()==shape::text)
+            //ogltransform(0,0,0,scale, scale, 0, 0);
         oglMtransform(Transform);
         ogltransform(x,y,r,xs,ys,xo,yo);
         applyTransformationHierarchy((matrixData *)drawnShape->getPropertyByName("tfmatrix"));
@@ -1547,10 +1542,11 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 dbg+=";";
 
                 numberData * syze = (numberData *)getSurfaceDataPoint(drawnShape->getPropertyByName("size"));
+                ogltransform(0,0,0,scale, scale, 0, 0);
                 if (syze == nullptr)
-                    FT_Set_Pixel_Sizes(currentFace, 0, 12);
+                    FT_Set_Pixel_Sizes(currentFace, 0, 12/scale);
                 else
-                    FT_Set_Pixel_Sizes(currentFace, 0, syze->getData());
+                    FT_Set_Pixel_Sizes(currentFace, 0, syze->getData()/scale);
                 textData * tex = (textData *)getSurfaceDataPoint(drawnShape->getPropertyByName("text"));
                 std::string label;
                 if(tex!=nullptr)
@@ -1808,7 +1804,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
 
 void OGLplotter::ogldraw(GLenum mode, std::vector<vertex> points)
 {
-    return ;
+   // return;
     //GLuint vbo1;
     if (!pvflag)
     {
@@ -1837,6 +1833,7 @@ void OGLplotter::ogldraw(GLenum mode, std::vector<vertex> points)
 
 void OGLplotter::oglImage(texture gluimage, colorconv blend)
 {
+ //   return;
     float ww, hh;
     ww=(float)gluimage.w;
     hh=(float)gluimage.h;
@@ -1877,6 +1874,7 @@ void OGLplotter::oglImage(texture gluimage, colorconv blend)
 
 void OGLplotter::oglText(std::string text, colorconv blend)
 {
+    //return;
     if (!FTFaceInit||!FTInit)
         return;
     const char *p;
@@ -1985,6 +1983,7 @@ void OGLplotter::oglText(std::string text, colorconv blend)
 
 void OGLplotter::oglTextSetWH(std::string text, colorconv blend)
 {
+    //return;
     if (!FTFaceInit||!FTInit)
         return;
     const char *p;
@@ -1998,7 +1997,8 @@ void OGLplotter::oglTextSetWH(std::string text, colorconv blend)
         text.replace(sp, 2, "\n");
         sp += 1;
     }
-	for (p = (text.c_str()); *p; p++, i++)
+
+    for (p = (text.c_str()); *p; p++, i++)
 	{
         if (text[i] == '\n' || text[i] == '\r')
             {
@@ -2014,8 +2014,8 @@ void OGLplotter::oglTextSetWH(std::string text, colorconv blend)
             if (y > texth)
                 texth = y;
             }
-		if (FT_Load_Char(currentFace, *p, FT_LOAD_RENDER))
-			continue;
+		//if (FT_Load_Char(currentFace, *p, FT_LOAD_RENDER))
+			//continue;
 
 
 		if (text[i] != '\n' && text[i] != '\r')
