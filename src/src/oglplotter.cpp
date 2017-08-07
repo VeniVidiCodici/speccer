@@ -166,6 +166,7 @@ void OGLplotter::enableClientStates()
 }
 void OGLplotter::redraw()
 {
+    //return;
     wxPaintDC(this);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     identity();
@@ -762,6 +763,7 @@ void OGLplotter::setDrawableCoordinates(drawable * drawn,Matrix Transform, bool 
             break;
             case shape::text:
                 {
+                return;
                 fontData * fd = (fontData *)drawnShape->getPropertyByName("font");
                 if (fd==nullptr)
                     break;
@@ -789,9 +791,9 @@ void OGLplotter::setDrawableCoordinates(drawable * drawn,Matrix Transform, bool 
 
                 numberData * syze = (numberData *)getSurfaceDataPoint(drawnShape->getPropertyByName("size"));
                 if (syze == nullptr)
-                    FT_Set_Pixel_Sizes(currentFace, 0, 12);
+                    FT_Set_Pixel_Sizes(currentFace, 0, 12/scale);
                 else
-                    FT_Set_Pixel_Sizes(currentFace, 0, syze->getData());
+                    FT_Set_Pixel_Sizes(currentFace, 0, syze->getData()/scale);
                 textData * tex = (textData *)getSurfaceDataPoint(drawnShape->getPropertyByName("text"));
                 std::string label;
                 if(tex!=nullptr)
@@ -957,6 +959,7 @@ void OGLplotter::setDrawableCoordinates(drawable * drawn,Matrix Transform, bool 
 
 void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
 {
+    //return ;
     if (!drawn->isSimplex())
     {
         for(drawable * obj:((composite *)drawn)->getShapes())
@@ -970,6 +973,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
     }
     else
     {
+        //return;
         shape * drawnShape = (shape*)drawn;
         vertex testV1(drawnShape->getx(),drawnShape->gety(),0,0,0,0),
                testV2(drawnShape->getx()+drawnShape->getw(),drawnShape->gety()+drawnShape->geth(),0,0,0,0);
@@ -994,6 +998,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
         formulaData * rotation = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("rotation"));
         formulaData * xscale = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("xscale"));
         formulaData * yscale = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("yscale"));
+        //return;
 
         double x=0.0,y=0.0,fr=0.0,fg=0.0,fb=0.0,fa=0.0,ro=0.0,og=0.0,ob=0.0,oa=0.0,ot=0.0,
                 xo=0.0,yo=0.0,xs=1.0,ys=1.0,r=0.0;
@@ -1034,16 +1039,20 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
             xs=f->parse(xscale->getData(),globvar);
             ys=f->parse(yscale->getData(),globvar);
             }
+        //return;
 
 
-        wxPaintDC(this);
+   //     wxPaintDC(this);
+        //return;
  /*       glLoadIdentity();
         GLint wi, he;
         wi = (GLint)GetSize().x;
         he = (GLint)GetSize().y;
         glOrtho( -wi/2, wi/2, he/2, -he/2, 0.0, 1.0 ); /// needed to make one OGL unit match one pixel
 */
-        glEnable(GL_LINE_SMOOTH);/*
+        glEnable(GL_LINE_SMOOTH);
+
+        /*
 
         testV1 = vtxMtransform(Transform,testV1);
         testV2 = vtxMtransform(Transform,testV2);
@@ -1083,6 +1092,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
         //if (!isItOnScreenMinMax(testXmin, testYmin, testXmax, testYmax)&&drawnShape->getType()!=shape::brpoint)
           //  return ; /// don't draw things outside the screen, save time
 
+        //return ;
         switch(drawnShape->getType())
             {
             case shape::root:
@@ -1245,8 +1255,8 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 oglLine(p, 1.0, true);
                 }
             break;
-            case shape::circle: // oglt + ath
-                {
+            case shape::circle:
+                {//return;
                 int m; double c;
                 numberData * sides = (numberData *)getSurfaceDataPoint(drawnShape->getPropertyByName("sides"));
                 formulaData * radius = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("radius"));
@@ -1298,7 +1308,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
             break;
             case shape::arc:
-                {
+                {//return;
                 int m; double c;
                 numberData * sides = (numberData *)getSurfaceDataPoint(drawnShape->getPropertyByName("sides"));
                 formulaData * radius = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("radius"));
@@ -1312,20 +1322,22 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 bool hasiol = iol->getData();
                 bool hasool = ool->getData();
                 m = sides->getData();
+                //m=4;
                 if (m<2)
                     break;
+                //m=1;
                 c = m / (2*3.1415926535*angl/360.0);
-                std::vector<vertex> p;
+                std::vector<vertex> p, olv;
                 double minx=0.0, maxx=0.0, miny=0.0, maxy=0.0;
                 double ix, iy;
                 p.push_back(vertex(0,0,fr,fg,fb,fa));
-                double maxa = 0.0;
                 for(int i=0;i<=m;i++)
                 {
-                    maxa = i/c;
                     ix = rad*cos(i/c);
                     iy = rad*sin(i/c);
                     p.push_back(vertex(ix,iy,fr,fg,fb,fa));
+                    if (ot>0.0&&hasool)
+                        olv.push_back(vertex(ix,iy,ro,og,ob,oa));
                     if (i==0 || ix < minx)
                         minx = ix;
                     if (i==0 || ix > maxx)
@@ -1335,11 +1347,30 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     if (i==0 || iy > maxy)
                         maxy = iy;
                 }
+                if (ot>0.0&&hasool)
+                    oglLine(p, ot, false);
+                /*if (ot>0.0&&hasool)
+                    {
+                    std::vector<vertex> p;
+                    //m = sides->getData();
+                    //c = m / (2*3.1415926535*angl/360.0);
+                    double lx, ly;
+                    for(int i=0;i<=m;i++)
+                        {
+                        //if (i/c>3.1415926535*angl/180)
+                          //  break;
+                        lx = rad*cos(i/c);
+                        ly = rad*sin(i/c);
+                        p.push_back(vertex(lx,ly,ro,og,ob,oa));
+                        }
+                    oglLine(p, ot, false);
+                    }*/
                 drawnShape->setx(x+minx);
                 drawnShape->sety(y+miny);
                 drawnShape->setW(maxx-minx);
                 drawnShape->seth(maxy-miny);
                 ogldraw(GL_POLYGON,p);
+                //return;
 
                 /*if (ot>0.0&&hasiol&&hasool)  /// code for unified drawing of both outlines, doesn't work
                 {
@@ -1365,8 +1396,8 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 if (ot>0.0&&hasiol)
                 {
                     std::vector<vertex> ip;
-                    ix = rad*cos(0.0);
-                    iy = rad*sin(0.0);
+                    ix = rad;//*cos(0.0);
+                    iy = 0;//rad*sin(0.0);
                     ip.push_back(vertex(ix,iy,ro,og,ob,oa));
                     ip.push_back(vertex(0.0,0.0,ro,og,ob,oa));
                     ix = rad*cos(2*3.1415926535*angl/360.0);
@@ -1374,22 +1405,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     ip.push_back(vertex(ix,iy,ro,og,ob,oa));
                     oglLine(ip, ot, false);
                 }//else
-                if (ot>0.0&&hasool)
-                    {
-                    std::vector<vertex> p;
-                    m = sides->getData();
-                    c = m / (2*3.1415926535*angl/360.0);
-                    double lx, ly;
-                    for(int i=0;i<=m;i++)
-                        {
-                        //if (i/c>3.1415926535*angl/180)
-                          //  break;
-                        lx = rad*cos(i/c);
-                        ly = rad*sin(i/c);
-                        p.push_back(vertex(lx,ly,ro,og,ob,oa));
-                        }
-                    oglLine(p, ot, false);
-                    }
+
                 }
             break;
             case shape::rectangle:
@@ -1424,7 +1440,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
             break;
             case shape::roundrect:
-                {
+                {return;
                 formulaData * width = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("width"));
                 formulaData * height = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("height"));
                 formulaData * radius = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("cradius"));
@@ -1478,7 +1494,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
             break;
             case shape::convex:
-                {
+                {//return;
                 collectionData * points = (collectionData *)drawnShape->getPropertyByName("points");
                 if (points==nullptr)
                     break;
@@ -1515,7 +1531,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
             break;
             case shape::text:
-                {
+                {return;
                 fontData * fd = (fontData *)drawnShape->getPropertyByName("font");
                 if (fd==nullptr)
                     break;
@@ -1683,7 +1699,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
             break;
             case shape::points:
-                {
+                {//return;
                 choiceData * cd = (choiceData *)drawnShape->getPropertyByName("type");
                 if (cd==nullptr)
                     break;
@@ -1739,7 +1755,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
             break;
             case shape::matrix:
-                {
+                {return;
                 drawnShape->setx(0.0);
                 drawnShape->sety(0.0);
                 drawnShape->setW(0.0);
@@ -1804,7 +1820,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
 
 void OGLplotter::ogldraw(GLenum mode, std::vector<vertex> points)
 {
-   // return;
+    return;
     //GLuint vbo1;
     if (!pvflag)
     {
@@ -1817,7 +1833,7 @@ void OGLplotter::ogldraw(GLenum mode, std::vector<vertex> points)
     ///////^^??
     //http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-2.1:-Buffers-and-Textures.html
     //// + dynamic draw \/
-    glBufferDataARB(GL_ARRAY_BUFFER_ARB,points.size() * sizeof(vertex),&points[0],GL_STATIC_DRAW_ARB);
+    glBufferDataARB(GL_ARRAY_BUFFER_ARB,points.size() * sizeof(vertex),&points[0],GL_STREAM_DRAW_ARB);
     glVertexPointer(2, GL_FLOAT, sizeof(vertex), NULL);
     glColorPointer(4, GL_FLOAT, sizeof(vertex), (void*)(sizeof(float)*2));
     glEnable(GL_TEXTURE_2D);
@@ -1833,7 +1849,7 @@ void OGLplotter::ogldraw(GLenum mode, std::vector<vertex> points)
 
 void OGLplotter::oglImage(texture gluimage, colorconv blend)
 {
- //   return;
+    //return;
     float ww, hh;
     ww=(float)gluimage.w;
     hh=(float)gluimage.h;
@@ -1854,8 +1870,8 @@ void OGLplotter::oglImage(texture gluimage, colorconv blend)
         glGenBuffersARB(1, &imvbo);
         ivflag = true;
     }
-    glBindBufferARB(GL_ARRAY_BUFFER_ARB, imvbo);
-    glBufferDataARB(GL_ARRAY_BUFFER_ARB,4 * sizeof(float) * 8,&points[0],GL_STATIC_DRAW_ARB);
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, imvbo);//GL_STATIC_DRAW_ARB
+    glBufferDataARB(GL_ARRAY_BUFFER_ARB,4 * sizeof(float) * 8,&points[0],GL_STREAM_DRAW_ARB);
     glVertexPointer(2, GL_FLOAT, sizeof(float) * 8, NULL);
     glColorPointer(4, GL_FLOAT, sizeof(float) * 8, (void*)(sizeof(float)*2));
     glTexCoordPointer(2, GL_FLOAT, sizeof(float) * 8, (void*)(sizeof(float)*6));
@@ -1874,7 +1890,17 @@ void OGLplotter::oglImage(texture gluimage, colorconv blend)
 
 void OGLplotter::oglText(std::string text, colorconv blend)
 {
-    //return;
+    /*
+    http://www.angelcode.com/products/bmfont/
+    https://github.com/SudoMike/SudoFont
+    https://en.wikipedia.org/wiki/Packing_problems#Packing_rectangles
+    https://www.codeproject.com/Articles/210979/Fast-optimizing-rectangle-packing-algorithm-for-bu
+    https://github.com/rougier/freetype-gl
+    http://malideveloper.arm.com/downloads/deved/tutorial/SDK/linux/2.4/simple_text_rendering.html
+    http://www.codehead.co.uk/cbfg/
+    http://ftgl.sourceforge.net/docs/html/ftgl-tutorial.html
+    */
+    return;
     if (!FTFaceInit||!FTInit)
         return;
     const char *p;
@@ -1957,7 +1983,7 @@ void OGLplotter::oglText(std::string text, colorconv blend)
 			x2 + w, y2 + h, r, gr, b, a, 1, 1
 		};
 
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB, 4*sizeof(float)*8, &points[0], GL_STATIC_DRAW_ARB);
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB, 4*sizeof(float)*8, &points[0], GL_STREAM_DRAW_ARB);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 		if (text[i] != '\n' && text[i] != '\r')
@@ -1983,7 +2009,7 @@ void OGLplotter::oglText(std::string text, colorconv blend)
 
 void OGLplotter::oglTextSetWH(std::string text, colorconv blend)
 {
-    //return;
+    return;
     if (!FTFaceInit||!FTInit)
         return;
     const char *p;
@@ -2090,6 +2116,7 @@ wxString glGetwxString(GLenum name)
 }
 void OGLplotter::applyTransformationHierarchy(matrixData * md)
 {
+  //  return ;
     double rot=0.0, xs=1.0, ys=1.0, xo=0.0, yo=0.0,x=0.0,y=0.0;
     shape * mat;
     formulaData * xpos;
@@ -2163,6 +2190,7 @@ void OGLplotter::applyTransformationHierarchy(matrixData * md)
 }
 void OGLplotter::ogltransform(double x, double y, double r, double xs, double ys, double ox, double oy)
 {
+ //   return ;
     double tfm[16];
     double ac=3.1415926535/180;
     tfm[0] = 1 ;	tfm[1] = 0 ;	tfm[2] = 0 ;	tfm[3] = x ;
@@ -2193,7 +2221,9 @@ void OGLplotter::ogltransform(double x, double y, double r, double xs, double ys
 }
 Matrix OGLplotter::mtransform(Matrix m, double x, double y, double r, double xs, double ys, double ox, double oy)
 {
+
     Matrix tfm;
+ //   return tfm;
     double ac=3.1415926535/180;
     tfm.m[0] = 1 ;	tfm.m[1] = 0 ;	tfm.m[2] = 0 ;	tfm.m[3] = x ;
     tfm.m[4] = 0 ;	tfm.m[5] = 1 ;	tfm.m[6] = 0 ;	tfm.m[7] = y ;
@@ -2223,6 +2253,7 @@ Matrix OGLplotter::mtransform(Matrix m, double x, double y, double r, double xs,
 }
 Matrix OGLplotter::applyTransformationHierarchyToMatrix(Matrix m, matrixData * md)
 {
+  //  return m;
     double rot=0.0, xs=1.0, ys=1.0, xo=0.0, yo=0.0,x=0.0,y=0.0;
     shape * mat;
     formulaData * xpos;
@@ -2297,10 +2328,12 @@ Matrix OGLplotter::applyTransformationHierarchyToMatrix(Matrix m, matrixData * m
 }
 void OGLplotter::oglMtransform(Matrix m)
 {
+   // return ;
     glMultTransposeMatrixd(m.m);
 }
 vertex OGLplotter::vtxMtransform(Matrix m, vertex v)
 {
+ //   return v;
     Matrix tfm;
     tfm.m[0] = 1 ;	tfm.m[1] = 0 ;	tfm.m[2] = 0 ;	tfm.m[3] = v.x ;
     tfm.m[4] = 0 ;	tfm.m[5] = 1 ;	tfm.m[6] = 0 ;	tfm.m[7] = v.y ;
@@ -2311,7 +2344,9 @@ vertex OGLplotter::vtxMtransform(Matrix m, vertex v)
 }
 Matrix OGLplotter::transformationToMatrix(double x, double y, double r, double xs, double ys, double ox, double oy)
 {
+
     Matrix newm;
+ //   return newm;
     for (int i=0;i<16;i++)
         newm.m[i]=0.0;
     for (int i=0;i<16;i+=5)
@@ -2320,6 +2355,7 @@ Matrix OGLplotter::transformationToMatrix(double x, double y, double r, double x
 }
 Matrix OGLplotter::multiplyMatrices(Matrix m1, Matrix m2)
 {
+   // return m1;
     Matrix res;
     for (int i=0;i<16;i++)
         res.m[i]=0;
@@ -2333,6 +2369,7 @@ Matrix OGLplotter::multiplyMatrices(Matrix m1, Matrix m2)
 }
 vertex OGLplotter::vtxtransform(vertex v, double x, double y, double r, double xs, double ys, double ox, double oy)
 {
+  //  return v;
     double tfm[9];
     double ac=3.1415926535/180, nx, ny;
     v.x+=x+ox;
@@ -2354,6 +2391,7 @@ vertex OGLplotter::vtxtransform(vertex v, double x, double y, double r, double x
 
 vertex OGLplotter::applyTransformationHierarchyToVertex(vertex v, matrixData * md)
 {
+   // return v;
     double rot=0.0, xs=1.0, ys=1.0, xo=0.0, yo=0.0,x=0.0,y=0.0;
     shape * mat;
     formulaData * xpos;
@@ -2416,6 +2454,7 @@ vertex OGLplotter::applyTransformationHierarchyToVertex(vertex v, matrixData * m
 
 vertex OGLplotter::applyTransformationHierarchyToVertexNoFirst(vertex v, matrixData * md)
 {
+    //return v;
     double rot=0.0, xs=1.0, ys=1.0, xo=0.0, yo=0.0,x=0.0,y=0.0;
     shape * mat;
     if (md==nullptr) return v;
@@ -2483,6 +2522,7 @@ vertex OGLplotter::applyTransformationHierarchyToVertexNoFirst(vertex v, matrixD
 
 void OGLplotter::oglLine(std::vector<vertex> points, double width)
 {
+    std::vector<vertex> resultLine, tempv;
     double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
     double x0,y0,x1,y1,x2,y2,x3,y3;
     int s = points.size();
@@ -2491,82 +2531,101 @@ void OGLplotter::oglLine(std::vector<vertex> points, double width)
         s-=1;
     for(int i=0;i<s-1;i+=2)
     {
-        line(points[i].x, points[i].y,
+        tempv = line(points[i].x, points[i].y,
                 points[i+1].x, points[i+1].y,
                 width,r,g,b,a,0.0,0.0,true);
+        resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
     }
+    if (resultLine.size()>=2&&false)
+        ogldraw(GL_TRIANGLE_STRIP,resultLine);
 }
 
 void OGLplotter::oglLine(std::vector<vertex> points, double width, bool loop)
 {
+    std::vector<vertex> resultLine, tempv;
     double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
     int s = points.size();
     if (s<2) return;
     else if (s==2)
     {
-        line(points[0].x, points[0].y, points[1].x, points[1].y,width,r,g,b,a,0.0,0.0,true);
+        tempv = line(points[0].x, points[0].y, points[1].x, points[1].y,width,r,g,b,a,0.0,0.0,true);
+        resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
     }
     else if (s==3)
     {
         if (!loop)
         {
-            linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
+            tempv = linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,true,false);
-            linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,0.0,0.0,
+            resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
+            tempv = linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,0.0,0.0,
                     width,r,g,b,a,0.0,0.0,true,false,true);
+            resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
         }
         else
         {
-            linecon(points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
+            tempv = linecon(points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
-            linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,
+            resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
+            tempv = linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
-            linecon(points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,
+            resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
+            tempv = linecon(points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+            resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
         }
     }
     else
     if (!loop)
     {
-        linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
+        tempv = linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,true,false);
+        resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
         for(int i=1;i<s-2;i++)
         {
-            linecon(points[i-1].x, points[i-1].y,
+            tempv = linecon(points[i-1].x, points[i-1].y,
                     points[i].x, points[i].y,
                     points[i+1].x, points[i+1].y,
                     points[i+2].x, points[i+2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+            resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
         }
-        linecon(points[s-3].x, points[s-3].y,points[s-2].x, points[s-2].y,points[s-1].x, points[s-1].y,0.0,0.0,
+        tempv = linecon(points[s-3].x, points[s-3].y,points[s-2].x, points[s-2].y,points[s-1].x, points[s-1].y,0.0,0.0,
                     width,r,g,b,a,0.0,0.0,true,false,true);
+        resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
     }
     else
     {
-        linecon(points[s-1].x, points[s-1].y,
+        tempv = linecon(points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                 points[1].x, points[1].y,
                 points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+        resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
         for(int i=1;i<s-2;i++)
         {
-            linecon(points[i-1].x, points[i-1].y,
+            tempv = linecon(points[i-1].x, points[i-1].y,
                     points[i].x, points[i].y,
                     points[i+1].x, points[i+1].y,
                     points[i+2].x, points[i+2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+            resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
         }
-        linecon(points[s-3].x, points[s-3].y,
+        tempv = linecon(points[s-3].x, points[s-3].y,
                 points[s-2].x, points[s-2].y,
                 points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
-        linecon(points[s-2].x, points[s-2].y,
+        resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
+        tempv = linecon(points[s-2].x, points[s-2].y,
                 points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                 points[1].x, points[1].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+        resultLine.insert(resultLine.end(), tempv.begin(), tempv.end());
     }
+    if (resultLine.size()>=2)
+        ogldraw(GL_TRIANGLE_STRIP,resultLine);
 }
 void OGLplotter::resetView()
 {
@@ -2748,7 +2807,7 @@ double OGLplotter::GET_ABS(double x) {return x>0?x:-x;}
 // some functions are modified, extended or added
 // used under The Code Project Open License (CPOL): https://www.codeproject.com/info/cpol10.aspx
 
-void OGLplotter::line( double x1, double y1, double x2, double y2, //coordinates of the line
+std::vector<vertex> OGLplotter::line( double x1, double y1, double x2, double y2, //coordinates of the line
 	double w,			//width/thickness of the line in pixel
 	double Cr, double Cg, double Cb,	//RGB color components
 	double Br, double Bg, double Bb,	//color of background when alphablend=false,
@@ -2905,7 +2964,10 @@ void OGLplotter::line( double x1, double y1, double x2, double y2, //coordinates
 		//glColorPointer(4, GL_FLOAT, 0, line_color);
 	}
 
-	ogldraw(GL_TRIANGLE_STRIP,p);
+
+	return p;
+
+	/*ogldraw(GL_TRIANGLE_STRIP,p);
 	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
 
 	//cap
@@ -2985,15 +3047,49 @@ void OGLplotter::line( double x1, double y1, double x2, double y2, //coordinates
 		//glDrawArrays(GL_TRIANGLE_STRIP, 6, 6);
 	}
 
+	*/
+
 
 }
 
-void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
+std::vector<vertex> OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
             double w,
             double Cr, double Cg, double Cb,
             double Br, double Bg, double Bb,
             bool alphablend, bool begining, bool ending)
 {
+    w/=2.0;
+    std::vector<vertex> res;
+    colorconv colr = colorconv(Cr,Cg,Cb,alphablend);
+    if (!begining)
+    {
+        double tn = thickness * normal;
+        res.push_back(vertex(x1 - tn, y1 - tn, colr));
+        res.push_back(vertex(x1 + tn, y1 + tn, colr));
+    }
+    else
+    {
+        res.push_back(vertex(x1 - w, y1 - w, colr));
+        res.push_back(vertex(x1 + w, y1 + w, colr));
+    }
+    if (!ending)
+    {
+        double tn = thickness * normal;
+        res.push_back(vertex(x2 - tn, y2 - tn, colr));
+        res.push_back(vertex(x2 + tn, y2 + tn, colr));
+    }
+    else
+    {
+        res.push_back(vertex(x2 - w, y2 - w, colr));
+        res.push_back(vertex(x2 + w, y2 + w, colr));
+    }
+    return res;
+    std::vector<vertex> pq;
+    pq.push_back(vertex(1,2,colorconv(1,2,3,251)));
+    pq.push_back(vertex(10,2,colorconv(1,2,3,251)));
+    pq.push_back(vertex(1,20,colorconv(1,2,3,251)));
+    return pq;
+    //return;
     double t;//thickness
 	double R;//edge
 	double f=w-static_cast<int>(w);//the fractional part of the width
@@ -3005,7 +3101,7 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
 		A=1.0;
 
 	//determine parameters t,R
-	/*   */if ( w>=0.0 && w<1.0) {
+	if ( w>=0.0 && w<1.0 ) {
 		t=0.05; R=0.48+0.32*f;
 		if ( !alphablend) {
 			Cr+=0.88*(1-f);
@@ -3046,52 +3142,34 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
     double L=sqrt(dx*dx+dy*dy);
     dx/=L;
     dy/=L;
-/*
-	if ( GET_ABS(dx) < ALW) {
-		//vertical
-		tx=t; ty=0;
-		Rx=R; Ry=0;
-		if ( w>0.0 && w<=1.0) {
-			tx = 0.5; Rx=0.0;
-		}
-	} else if ( GET_ABS(dy) < ALW) {
-		//horizontal
-		tx=0; ty=t;
-		Rx=0; Ry=R;
-		if ( w>0.0 && w<=1.0) {
-			ty = 0.5; Ry=0.0;
-		}
-	} else
-	*/
-	{
-		if ( w < 3.0) { //approximate to make things even faster
-			double m=dx/dy;
-			//and calculate tx,ty,Rx,Ry
-			if ( m>-0.4142 && m<=0.4142) {
-				// -22.5< angle <= 22.5, approximate to 0 (degree)
-				tx=t*0.1; ty=t;
-				Rx=R*0.6; Ry=R;
-			} else if ( m>0.4142 && m<=2.4142) {
-				// 22.5< angle <= 67.5, approximate to 45 (degree)
-				tx=t*-0.7071; ty=t*0.7071;
-				Rx=R*-0.7071; Ry=R*0.7071;
-			} else if ( m>2.4142 || m<=-2.4142) {
-				// 67.5 < angle <=112.5, approximate to 90 (degree)
-				tx=t; ty=t*0.1;
-				Rx=R; Ry=R*0.6;
-			} else if ( m>-2.4142 && m<-0.4142) {
-				// 112.5 < angle < 157.5, approximate to 135 (degree)
-				tx=t*0.7071; ty=t*0.7071;
-				Rx=R*0.7071; Ry=R*0.7071;
-			} else {
-				// error in determining angle
-				//printf( "error in determining angle: m=%.4f\n",m);
-			}
-		} else { //calculate to exact
-			tx=t*dx; ty=t*dy;
-			Rx=R*dx; Ry=R*dy;
-		}
-	}
+
+    if ( w < 3.0) { //approximate to make things even faster
+        double m=dx/dy;
+        //and calculate tx,ty,Rx,Ry
+        if ( m>-0.4142 && m<=0.4142) {
+            // -22.5< angle <= 22.5, approximate to 0 (degree)
+            tx=t*0.1; ty=t;
+            Rx=R*0.6; Ry=R;
+        } else if ( m>0.4142 && m<=2.4142) {
+            // 22.5< angle <= 67.5, approximate to 45 (degree)
+            tx=t*-0.7071; ty=t*0.7071;
+            Rx=R*-0.7071; Ry=R*0.7071;
+        } else if ( m>2.4142 || m<=-2.4142) {
+            // 67.5 < angle <=112.5, approximate to 90 (degree)
+            tx=t; ty=t*0.1;
+            Rx=R; Ry=R*0.6;
+        } else if ( m>-2.4142 && m<-0.4142) {
+            // 112.5 < angle < 157.5, approximate to 135 (degree)
+            tx=t*0.7071; ty=t*0.7071;
+            Rx=R*0.7071; Ry=R*0.7071;
+        } else {
+            // error in determining angle
+        }
+    } else { //calculate to exact
+        tx=t*dx; ty=t*dy;
+        Rx=R*dx; Ry=R*dy;
+    }
+
 
 	dx=y1-y2;   //y2-y1
     dy=x1-x2;   //x2-x1
@@ -3102,7 +3180,6 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
     //now do some mathemagics to figure out how to fill in the gaps between consecutive lines
     if (!begining)
     {
-        //double pdy = x1-x0, pdx = y1-y0;
         double pdy = x0-x1, pdx = y0-y1;
         double L2=sqrt(pdx*pdx+pdy*pdy);
         pdx/=L2;
@@ -3111,25 +3188,14 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
         rx = pdy - dy;
         ry = pdx-dx;
         rx*=w/2;ry*=w/2;
-        //rx = pdy*w/2 - dy*w/2;
-        //ry = pdx*w/2 - dx*w/2;
         double r, d;
         r = sqrt(rx*rx+ry*ry);
-        //r=0;
         d = (r*w) / (2*sqrt(w*w-r*r));
-        //r / (2.0*sqrt(1.0 - (r/w)*(r/w) ));
-        //d = (r*sqrt(w*w-r*r))/(2*w);
-
-        //d=0*w/2 + r/2;
-        //d/=w;d=0;
-
-        //d+=w/2;
         pdxo = d*dy;
         pdyo = d*dx;
     }
     if (!ending)
     {
-        //double pdy = x3-x2, pdx = y3-y2;
         double pdy = x2-x3, pdx = y2-y3;
         double L2=sqrt(pdx*pdx+pdy*pdy);
         pdx/=L2;
@@ -3138,36 +3204,12 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
         rx = pdy - dy;
         ry = pdx-dx;
         rx*=w/2;ry*=w/2;
-        //rx = pdy*w/2 - dy*w/2;
-        //ry = pdx*w/2 - dx*w/2;
         double r, d;
         r = sqrt(rx*rx+ry*ry);
-       // r=0;
         d = (r*w) / (2*sqrt(w*w-r*r));
-        //r / (2.0*sqrt(1.0 - (r/w)*(r/w) ));
-        //d = (r*sqrt(w*w-r*r))/(2*w);
-
-        //d=0*w/2 + r/2;
-        //d/=w;d=0;
-        //d+=w/2;
-
         fdxo = d*dy;
         fdyo = d*dx;
     }
-
-
-	//pdxo = pdyo = 0;//w;
-	//fdxo = fdyo = 0;
-
-	//pdxo=-pdxo;
-	//pdyo=-pdyo;
-	//fdxo=-fdxo;
-	//fdyo=-fdyo;
-	//double n = -1.0;
-	//pdxo+=w/2;
-	//fdxo-=w/2;
-	//pdyo+=w/2;
-	//fdyo-=w/2;
 
 	//draw the line by triangle strip
 	//x1 y1 match the preceding distance (pdxo, pdyo) and x2 y2 match the following distance
@@ -3186,7 +3228,8 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
 	//glVertexPointer(2, GL_FLOAT, 0, line_vertex);
 	std::vector<vertex> p;
 
-	if ( !alphablend) {
+	if ( !alphablend)
+    {
 		double line_color[]=
 		{
 			Br,Bg,Bb,
@@ -3201,7 +3244,9 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
 		for(int i=0;i<8;i++)
             p.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
                                line_color[i*3],line_color[i*3+1],line_color[i*3+2]));
-	} else {
+	}
+	else
+	{
 		double line_color[]=
 		{
 			Cr,Cg,Cb,0,
@@ -3218,7 +3263,9 @@ void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, 
                                line_color[i*4],line_color[i*4+1],line_color[i*4+2],line_color[i*4+3]));
 	}
 
-	ogldraw(GL_TRIANGLE_STRIP,p);
+	return p;
+	//if (false)
+    //    ogldraw(GL_TRIANGLE_STRIP,p);
 }
 
 /*a skimmed version of line(); no color, no thickness control

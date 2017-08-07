@@ -21,6 +21,7 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 #include <vector>
+#include <map>
 #include <string>
 #include "serialisable.h"
 #include "alldatatypes.h"

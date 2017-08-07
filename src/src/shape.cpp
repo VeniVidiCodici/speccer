@@ -130,6 +130,7 @@ shape::shape(std::string whatName, shapeType kind)
         std::vector<vertInfo> nopoints;
         shapeProperties.push_back(new collectionData("points",nopoints,""));
         shapeProperties.push_back(new choiceData("type",1,"Primitive type"));
+        updateShapeCache();
         choiceData * cd = (choiceData *)getPropertyByName("type");
         cd->addAnOption(1,"Lines");
         cd->addAnOption(2,"Line strip");
@@ -150,6 +151,8 @@ shape::shape(std::string whatName, shapeType kind)
     }
     if (type!=root)
         shapeProperties.push_back(new matrixData("tfmatrix", nullptr,"Tfm.\r\nmatrix"));
+
+    updateShapeCache();
     //shapeProperties.push_back(new boolData("constant",false));
     //shapeProperties.push_back(new boolData("property",false));
 }
@@ -159,11 +162,19 @@ shape::~shape()
     for (dataPoint* obj : shapeProperties)
         delete obj;
     shapeProperties.clear();
+    shapeCache.clear();
+}
+void shape::updateShapeCache()
+{
+    shapeCache.clear();
+    for (dataPoint* obj : shapeProperties)
+        shapeCache[obj->getName()] = obj;
 }
 void shape::addPositionProperties()
 {
     shapeProperties.push_back(new formulaData("xpos","0","X"));
     shapeProperties.push_back(new formulaData("ypos","0","Y"));
+    updateShapeCache();
 }
 
 void shape::addShapeProperties()
@@ -226,17 +237,34 @@ bool shape::propertyExists(std::string propName)
 
 dataPoint * shape::getPropertyByName(std::string propName)
 {
-    for (dataPoint * obj : shapeProperties)
+    return shapeCache[propName];
+    //return nullptr;
+    //if (shapeCache.find(propName)!=shapeCache.end())
+      //  return shapeCache[propName];
+    /*for (dataPoint * obj : shapeProperties)
         {
             if(obj->getName()==propName)
+            {
+                if (shapeCache.find(propName)!=shapeCache.end())
+                    //return shapeCache[propName];
+                    {
+                    if (shapeCache[propName]!=obj)//&&propName!="xpos"&&propName!="ypos")
+                        std::cout << propName <<"!!! z "<<name<<std::endl;
+                    }
+                else
+                    shapeCache[obj->getName()] = obj;
                 return obj;
+            }
         }
-    return nullptr;
+    return nullptr;*/
 }
 void shape::addPropertyDuringDuplication(dataPoint * newProperty)
 {
     if (newProperty!=nullptr)
-    shapeProperties.push_back(newProperty);
+    {
+        shapeProperties.push_back(newProperty);
+        //shapeCache[newProperty->getName()] = newProperty;
+    }
 }
 void shape::duplicate()
 {
@@ -248,6 +276,7 @@ void shape::duplicate()
 }
 void shape::endDuplication()
 {
+    updateShapeCache();
     for (dataPoint* obj : shapeProperties)
         {obj->endDuplication();}
     duplicated = nullptr;
@@ -359,6 +388,8 @@ std::string shape::load(std::ifstream& _in, std::string version)
                 break;
             }
         }
+        updateShapeCache();
+
     }
     else
         return "Unsupported program version: "+version;

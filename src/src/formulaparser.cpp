@@ -208,6 +208,7 @@ std::string formulaParser::applyTagsToText(std::string input,
 
 double formulaParser::parse(std::string expression, bool useGlobalVariables)
 {
+    //return 1.0;
     useGlobVar = useGlobalVariables;
     input = expression;
     inputLength = input.length();

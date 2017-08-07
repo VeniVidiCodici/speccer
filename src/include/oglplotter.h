@@ -100,13 +100,21 @@ struct texture
     texture (unsigned char * i_, int w_, int h_):t(0), w(w_), h(h_), i(i_){}
     texture ():t(0), w(1), h(1), i(nullptr){}
 };
-/*
-struct charcache
+
+struct charCache
 {
-    double advancex, advancey;
-    float bmleft, bmtop, bmwidth, bmheight;
-    bm;
-};*/
+    float ax, ay; // advance.x && y
+    float bw, bh; // bitmap.width && height (rows)
+    float bl, bt; // bitmap_left && bitmap_top
+    float tx; // x offset
+};
+
+struct atlasdef
+{
+    std::string ftname;
+    int syze;
+    bool bold, italic;
+};
 
 typedef struct Vertex vertex;
 
@@ -191,6 +199,9 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
         std::map<std::string, FT_Face> ftfaces;
         std::map<std::string, bool> ftfacesinit;
 
+        std::map<atlasdef, bool> atlasflags;
+        std::map<atlasdef, GLuint> atlases;
+
         void initARBs();
         void identity();
         void setView();
@@ -235,7 +246,7 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
          *   choose only 1 from vase_rend_draft_1.h and vase_rend_draft_2.h
          *   to your need. if you have no preference, just use vase_rend_draft_2.h
          */
-        void line( double x1, double y1, double x2, double y2, //coordinates of the line
+        std::vector<vertex> line( double x1, double y1, double x2, double y2, //coordinates of the line
             double w,			//width/thickness of the line in pixel
             double Cr, double Cg, double Cb,	//RGB color components
             double Br, double Bg, double Bb,	//color of background when alphablend=false,
@@ -246,7 +257,7 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
         // essentially, four points connected with three lines
         // but this draws only the middle line!
         // begining and ending tell if the line is actually at either end
-        void linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
+        std::vector<vertex> linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
             double w,
             double Cr, double Cg, double Cb,
             double Br, double Bg, double Bb,

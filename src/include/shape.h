@@ -22,6 +22,8 @@
 #define SHAPE_H
 #include "alldatatypes.h"
 #include <vector>
+#include <map>
+#include <iostream>
 #include "drawable.h"
 
 class shape : public drawable
@@ -88,6 +90,8 @@ class shape : public drawable
     protected:
     private:
         std::vector<dataPoint *> shapeProperties;
+        std::map<std::string, dataPoint *> shapeCache;
+        void updateShapeCache();
         shapeType type;
         void addPositionProperties();
         void addShapeProperties();
