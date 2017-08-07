@@ -126,6 +126,8 @@ OGLplotter::~OGLplotter()
         glDeleteTextures(1, &(it->second.t));
     }
 }
+
+
 void OGLplotter::initARBs()
 {
 
@@ -416,22 +418,6 @@ void OGLplotter::Paintit(wxPaintEvent& WXUNUSED(event))
     }
 }
 
-double OGLplotter::getULCornerX(drawable * ofThisOne)
-{
-    return 0.0;//obsolete, query the drawable directly
-}
-double OGLplotter::getULCornerY(drawable * ofThisOne)
-{
-    return 0.0;//obsolete, query the drawable directly
-}
-double OGLplotter::getWidth(drawable * ofThisOne)
-{
-    return 0.0;//obsolete, query the drawable directly
-}
-double OGLplotter::getHeight(drawable * ofThisOne)
-{
-    return 0.0;//obsolete, query the drawable directly
-}
 void OGLplotter::createFormulaParser(bool actualGlobalVariables)
 {
     f = new formulaParser(actualGlobalVariables, owner);
@@ -1090,6 +1076,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
 
         switch(drawnShape->getType())
             {
+
             case shape::root:
                 {
                 drawnShape->setx(0.0);
@@ -1103,6 +1090,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 hair_line(0,-100,0,100,true);
                 }
             break;
+
             case shape::brpoint:
                 {
                 int m; double c;
@@ -1141,6 +1129,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     }
                 }
             break;
+
             case shape::anchor:
                 {
                 int m; double c;
@@ -1176,6 +1165,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
                 }
             break;
+
             case shape::bbox:
                 {
                 formulaData * width = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("width"));
@@ -1250,6 +1240,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 oglLine(p, 1.0, true);
                 }
             break;
+
             case shape::circle: // oglt + ath
                 {
                 int m; double c;
@@ -1302,6 +1293,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     }
                 }
             break;
+
             case shape::arc:
                 {
                 int m; double c;
@@ -1397,6 +1389,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     }
                 }
             break;
+
             case shape::rectangle:
                 {
                 formulaData * width = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("width"));
@@ -1428,6 +1421,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     }
                 }
             break;
+
             case shape::roundrect:
                 {
                 formulaData * width = (formulaData *)getSurfaceDataPoint(drawnShape->getPropertyByName("width"));
@@ -1482,6 +1476,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     }
                 }
             break;
+
             case shape::convex:
                 {
                 collectionData * points = (collectionData *)drawnShape->getPropertyByName("points");
@@ -1519,6 +1514,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     }
                 }
             break;
+
             case shape::text:
                 {
                 fontData * fd = (fontData *)drawnShape->getPropertyByName("font");
@@ -1584,6 +1580,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 drawnShape->seth(texth);
                 }
             break;
+
             case shape::image:
                 {
                 imageData * id = (imageData *)getSurfaceDataPoint(drawnShape->getPropertyByName("image"));
@@ -1686,6 +1683,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                     }
                 }
             break;
+
             case shape::points:
                 {
                 choiceData * cd = (choiceData *)drawnShape->getPropertyByName("type");
@@ -1742,6 +1740,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 }
                 }
             break;
+
             case shape::matrix:
                 {
                 drawnShape->setx(0.0);
@@ -1808,7 +1807,7 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
 
 void OGLplotter::ogldraw(GLenum mode, std::vector<vertex> points)
 {
-    return ;
+    //return ;
     //GLuint vbo1;
     if (!pvflag)
     {
@@ -1877,6 +1876,7 @@ void OGLplotter::oglImage(texture gluimage, colorconv blend)
 
 void OGLplotter::oglText(std::string text, colorconv blend)
 {
+    return;
     if (!FTFaceInit||!FTInit)
         return;
     const char *p;
@@ -2483,6 +2483,8 @@ vertex OGLplotter::applyTransformationHierarchyToVertexNoFirst(vertex v, matrixD
 
 void OGLplotter::oglLine(std::vector<vertex> points, double width)
 {
+    oglLine(points, width, false);
+    return;
     double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
     double x0,y0,x1,y1,x2,y2,x3,y3;
     int s = points.size();
@@ -2499,75 +2501,156 @@ void OGLplotter::oglLine(std::vector<vertex> points, double width)
 
 void OGLplotter::oglLine(std::vector<vertex> points, double width, bool loop)
 {
+    //return;
     double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
     int s = points.size();
     if (s<2) return;
-    else if (s==2)
+    std::vector<vertex> todraw, temp;
+    if (s==2)
+    {
+        todraw = linecon(0, 0, points[0].x, points[0].y, points[1].x, points[1].y,width,r,g,b,a,true, false, 0,0);
+        temp = linecon(points[0].x, points[0].y, points[1].x, points[1].y, 0, 0,width,r,g,b,a,false, true,
+                       todraw[0].x,todraw[0].y);
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
+    }
+    else if (!loop)
+    {
+        todraw = linecon(0, 0, points[0].x, points[0].y, points[1].x, points[1].y,width,r,g,b,a,true, false, 0,0);
+        for(int i=1;i<s-1;i++)
+        {
+            temp = linecon(points[i-1].x, points[i-1].y,
+                    points[i].x, points[i].y,
+                    points[i+1].x, points[i+1].y,
+                    width,r,g,b,a,false,false,
+                    todraw[2*i-1].x,todraw[2*i-1].y);
+            todraw.insert(todraw.end(), temp.begin(), temp.end());
+        }
+        temp = linecon(points[s-2].x, points[s-2].y,points[s-1].x, points[s-1].y,0, 0,
+                    width,r,g,b,a,false,true, todraw[s*2-5].x,todraw[s*2-5].y);
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
+    }
+    else
+    {
+        temp = linecon(points[s-1].x, points[s-1].y,
+                points[0].x, points[0].y,
+                points[1].x, points[1].y,
+                width,r,g,b,a,false,false, 0, 0);
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
+        for(int i=1;i<s-1;i++)
+        {
+            temp = linecon(points[i-1].x, points[i-1].y,
+                    points[i].x, points[i].y,
+                    points[i+1].x, points[i+1].y,
+                    width,r,g,b,a,false,false,
+                    todraw[2*i-1].x,todraw[2*i-1].y);
+            todraw.insert(todraw.end(), temp.begin(), temp.end());
+        }
+        temp = linecon(points[s-2].x, points[s-2].y,
+                points[s-1].x, points[s-1].y,
+                points[0].x, points[0].y,
+                width,r,g,b,a,false,false,
+                todraw[s*2-5].x,todraw[s*2-5].y);
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
+        temp = linecon(points[s-1].x, points[s-1].y,
+                points[0].x, points[0].y,
+                points[1].x, points[1].y,
+                width,r,g,b,a,false,false,
+                todraw[s*2-3].x,todraw[s*2-3].y);
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
+    }
+    ogldraw(GL_TRIANGLE_STRIP,todraw);
+}
+
+/*
+
+void OGLplotter::oglLine(std::vector<vertex> points, double width, bool loop)
+{
+    //return;
+    double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
+    int s = points.size();
+    if (s<2) return;
+    std::vector<vertex> todraw, temp;
+    if (s==2)
     {
         line(points[0].x, points[0].y, points[1].x, points[1].y,width,r,g,b,a,0.0,0.0,true);
+        return;
     }
     else if (s==3)
     {
         if (!loop)
         {
-            linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
+            todraw = linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,true,false);
-            linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,0.0,0.0,
+
+            temp = linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,0.0,0.0,
                     width,r,g,b,a,0.0,0.0,true,false,true);
+            todraw.insert(todraw.end(), temp.begin(), temp.end());
         }
         else
         {
-            linecon(points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
+            todraw = linecon(points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
-            linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,
+            temp = linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
-            linecon(points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,
+            todraw.insert(todraw.end(), temp.begin(), temp.end());
+            temp = linecon(points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+            todraw.insert(todraw.end(), temp.begin(), temp.end());
         }
     }
     else
     if (!loop)
     {
-        linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
+        todraw = linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,true,false);
         for(int i=1;i<s-2;i++)
         {
-            linecon(points[i-1].x, points[i-1].y,
+            temp = linecon(points[i-1].x, points[i-1].y,
                     points[i].x, points[i].y,
                     points[i+1].x, points[i+1].y,
                     points[i+2].x, points[i+2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+            todraw.insert(todraw.end(), temp.begin(), temp.end());
         }
-        linecon(points[s-3].x, points[s-3].y,points[s-2].x, points[s-2].y,points[s-1].x, points[s-1].y,0.0,0.0,
+        temp = linecon(points[s-3].x, points[s-3].y,points[s-2].x, points[s-2].y,points[s-1].x, points[s-1].y,0.0,0.0,
                     width,r,g,b,a,0.0,0.0,true,false,true);
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
     }
     else
     {
-        linecon(points[s-1].x, points[s-1].y,
+        todraw = linecon(points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                 points[1].x, points[1].y,
                 points[2].x, points[2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
         for(int i=1;i<s-2;i++)
         {
-            linecon(points[i-1].x, points[i-1].y,
+            temp = linecon(points[i-1].x, points[i-1].y,
                     points[i].x, points[i].y,
                     points[i+1].x, points[i+1].y,
                     points[i+2].x, points[i+2].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+            todraw.insert(todraw.end(), temp.begin(), temp.end());
         }
-        linecon(points[s-3].x, points[s-3].y,
+        temp = linecon(points[s-3].x, points[s-3].y,
                 points[s-2].x, points[s-2].y,
                 points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
-        linecon(points[s-2].x, points[s-2].y,
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
+        temp = linecon(points[s-2].x, points[s-2].y,
                 points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                 points[1].x, points[1].y,
                     width,r,g,b,a,0.0,0.0,true,false,false);
+        todraw.insert(todraw.end(), temp.begin(), temp.end());
     }
+    ogldraw(GL_TRIANGLE_STRIP,todraw);
 }
+
+
+*/
+
 void OGLplotter::resetView()
 {
     resetView(true);
@@ -2988,237 +3071,42 @@ void OGLplotter::line( double x1, double y1, double x2, double y2, //coordinates
 
 }
 
-void OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
-            double w,
-            double Cr, double Cg, double Cb,
-            double Br, double Bg, double Bb,
-            bool alphablend, bool begining, bool ending)
+
+std::vector<vertex> OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, double y2,
+            double w,double Cr, double Cg, double Cb, double a, bool begining, bool ending, double px, double py)
 {
-    double t;//thickness
-	double R;//edge
-	double f=w-static_cast<int>(w);//the fractional part of the width
-	double A;
-
-	if ( alphablend)
-		A=Br;
-	else
-		A=1.0;
-
-	//determine parameters t,R
-	/*   */if ( w>=0.0 && w<1.0) {
-		t=0.05; R=0.48+0.32*f;
-		if ( !alphablend) {
-			Cr+=0.88*(1-f);
-			Cg+=0.88*(1-f);
-			Cb+=0.88*(1-f);
-			if ( Cr>1.0) Cr=1.0;
-			if ( Cg>1.0) Cg=1.0;
-			if ( Cb>1.0) Cb=1.0;
-		} else {
-			A*=f;
-		}
-	} else if ( w>=1.0 && w<2.0) {
-		t=0.05+f*0.33; R=0.768+0.312*f;
-	} else if ( w>=2.0 && w<3.0){
-		t=0.38+f*0.58; R=1.08;
-	} else if ( w>=3.0 && w<4.0){
-		t=0.96+f*0.48; R=1.08;
-	} else if ( w>=4.0 && w<5.0){
-		t=1.44+f*0.46; R=1.08;
-	} else if ( w>=5.0 && w<6.0){
-		t=1.9+f*0.6; R=1.08;
-	} else if ( w>=6.0){
-		double ff=w-6.0;
-		t=2.5+ff*0.50; R=1.08;
-	}
-	R*=scale;
-
-	//determine angle of the line to horizontal
-	double tx=0,ty=0; //core thinkness of a line
-	double Rx=0,Ry=0; //fading edge of a line
-	double ALW=0.01;
-	double dx=x2-x1;
-	double dy=y2-y1;
-	double pdxo=0.0, fdxo=0.0;//preceding distance over and following distance over
-	double pdyo=0.0, fdyo=0.0;
-	dx=y1-y2;   //y2-y1
-    dy=x2-x1;   //x2-x1
-    double L=sqrt(dx*dx+dy*dy);
-    dx/=L;
-    dy/=L;
-/*
-	if ( GET_ABS(dx) < ALW) {
-		//vertical
-		tx=t; ty=0;
-		Rx=R; Ry=0;
-		if ( w>0.0 && w<=1.0) {
-			tx = 0.5; Rx=0.0;
-		}
-	} else if ( GET_ABS(dy) < ALW) {
-		//horizontal
-		tx=0; ty=t;
-		Rx=0; Ry=R;
-		if ( w>0.0 && w<=1.0) {
-			ty = 0.5; Ry=0.0;
-		}
-	} else
-	*/
-	{
-		if ( w < 3.0) { //approximate to make things even faster
-			double m=dx/dy;
-			//and calculate tx,ty,Rx,Ry
-			if ( m>-0.4142 && m<=0.4142) {
-				// -22.5< angle <= 22.5, approximate to 0 (degree)
-				tx=t*0.1; ty=t;
-				Rx=R*0.6; Ry=R;
-			} else if ( m>0.4142 && m<=2.4142) {
-				// 22.5< angle <= 67.5, approximate to 45 (degree)
-				tx=t*-0.7071; ty=t*0.7071;
-				Rx=R*-0.7071; Ry=R*0.7071;
-			} else if ( m>2.4142 || m<=-2.4142) {
-				// 67.5 < angle <=112.5, approximate to 90 (degree)
-				tx=t; ty=t*0.1;
-				Rx=R; Ry=R*0.6;
-			} else if ( m>-2.4142 && m<-0.4142) {
-				// 112.5 < angle < 157.5, approximate to 135 (degree)
-				tx=t*0.7071; ty=t*0.7071;
-				Rx=R*0.7071; Ry=R*0.7071;
-			} else {
-				// error in determining angle
-				//printf( "error in determining angle: m=%.4f\n",m);
-			}
-		} else { //calculate to exact
-			tx=t*dx; ty=t*dy;
-			Rx=R*dx; Ry=R*dy;
-		}
-	}
-
-	dx=y1-y2;   //y2-y1
-    dy=x1-x2;   //x2-x1
-    //double L=sqrt(dx*dx+dy*dy);
-    dx/=L;
-    dy/=L;
-
-    //now do some mathemagics to figure out how to fill in the gaps between consecutive lines
-    if (!begining)
+    std::vector<vertex> p;
+    if (begining && ending)
+        return p;
+    if (begining)
     {
-        //double pdy = x1-x0, pdx = y1-y0;
-        double pdy = x0-x1, pdx = y0-y1;
-        double L2=sqrt(pdx*pdx+pdy*pdy);
-        pdx/=L2;
-        pdy/=L2;
-        double rx,ry;
-        rx = pdy - dy;
-        ry = pdx-dx;
-        rx*=w/2;ry*=w/2;
-        //rx = pdy*w/2 - dy*w/2;
-        //ry = pdx*w/2 - dx*w/2;
-        double r, d;
-        r = sqrt(rx*rx+ry*ry);
-        //r=0;
-        d = (r*w) / (2*sqrt(w*w-r*r));
-        //r / (2.0*sqrt(1.0 - (r/w)*(r/w) ));
-        //d = (r*sqrt(w*w-r*r))/(2*w);
-
-        //d=0*w/2 + r/2;
-        //d/=w;d=0;
-
-        //d+=w/2;
-        pdxo = d*dy;
-        pdyo = d*dx;
+        x0 = 2*x1 - x2;
+        y0 = 2*y1 - y2;
     }
-    if (!ending)
+    if (ending)
     {
-        //double pdy = x3-x2, pdx = y3-y2;
-        double pdy = x2-x3, pdx = y2-y3;
-        double L2=sqrt(pdx*pdx+pdy*pdy);
-        pdx/=L2;
-        pdy/=L2;
-        double rx,ry;
-        rx = pdy - dy;
-        ry = pdx-dx;
-        rx*=w/2;ry*=w/2;
-        //rx = pdy*w/2 - dy*w/2;
-        //ry = pdx*w/2 - dx*w/2;
-        double r, d;
-        r = sqrt(rx*rx+ry*ry);
-       // r=0;
-        d = (r*w) / (2*sqrt(w*w-r*r));
-        //r / (2.0*sqrt(1.0 - (r/w)*(r/w) ));
-        //d = (r*sqrt(w*w-r*r))/(2*w);
-
-        //d=0*w/2 + r/2;
-        //d/=w;d=0;
-        //d+=w/2;
-
-        fdxo = d*dy;
-        fdyo = d*dx;
+        x2 = 2*x1 - x0;
+        y2 = 2*y1 - y0;
     }
 
+    double xs = (x0+x2)/2;
+    double ys = (y0+y2)/2;
+    double ds1 = sqrt( (xs-x1)*(xs-x1) + (ys-y1)*(ys-y1) );
+    double dxs1 = (xs - x1)/ds1;
+    double dys1 = (ys - y1)/ds1;
+    double tx = w*dxs1/2;
+    double ty = w*dys1/2;
+    double testx = x1-ty, testy = y1-tx;
 
-	//pdxo = pdyo = 0;//w;
-	//fdxo = fdyo = 0;
-
-	//pdxo=-pdxo;
-	//pdyo=-pdyo;
-	//fdxo=-fdxo;
-	//fdyo=-fdyo;
-	//double n = -1.0;
-	//pdxo+=w/2;
-	//fdxo-=w/2;
-	//pdyo+=w/2;
-	//fdyo-=w/2;
-
-	//draw the line by triangle strip
-	//x1 y1 match the preceding distance (pdxo, pdyo) and x2 y2 match the following distance
-	double line_vertex[]=
-	{
-		x1-tx-Rx+pdxo, y1-ty-Ry+pdyo, //fading edge1
-		x2-tx-Rx-fdxo, y2-ty-Ry-fdyo,
-		x1-tx   +pdxo, y1-ty   +pdyo,	  //core
-		x2-tx   -fdxo, y2-ty   -fdyo,
-		x1+tx   +pdxo, y1+ty   +pdyo,
-		x2+tx   -fdxo, y2+ty   -fdyo,
-		x1+tx+Rx+pdxo, y1+ty+Ry+pdyo, //fading edge2
-		x2+tx+Rx-fdxo, y2+ty+Ry-fdyo
-	};
-
-	//glVertexPointer(2, GL_FLOAT, 0, line_vertex);
-	std::vector<vertex> p;
-
-	if ( !alphablend) {
-		double line_color[]=
-		{
-			Br,Bg,Bb,
-			Br,Bg,Bb,
-			Cr,Cg,Cb,
-			Cr,Cg,Cb,
-			Cr,Cg,Cb,
-			Cr,Cg,Cb,
-			Br,Bg,Bb,
-			Br,Bg,Bb
-		};
-		for(int i=0;i<8;i++)
-            p.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*3],line_color[i*3+1],line_color[i*3+2]));
-	} else {
-		double line_color[]=
-		{
-			Cr,Cg,Cb,0,
-			Cr,Cg,Cb,0,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,0,
-			Cr,Cg,Cb,0
-		};
-		for(int i=0;i<8;i++)
-            p.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*4],line_color[i*4+1],line_color[i*4+2],line_color[i*4+3]));
-	}
-
-	ogldraw(GL_TRIANGLE_STRIP,p);
+    if ((((x0-px)*(testy-py) - (y0-py)*(testx-px))*((x1-px)*(testy-py) - (y1-py)*(testx-px)) < 0)&&
+        (((px-x0)*(y1-y0) - (py-y0)*(x1-x0))*((testx-x0)*(y1-y0) - (testy-y0)*(x1-x0)) < 0))
+    {
+        tx*=-1;
+        ty*=-1;
+    }
+    p.push_back(vertex(x1+ty, y1+tx, Cr,Cg,Cb,a));
+    p.push_back(vertex(x1-ty, y1-tx, Cr,Cg,Cb,a));
+    return p;
 }
 
 /*a skimmed version of line(); no color, no thickness control

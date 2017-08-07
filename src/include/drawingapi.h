@@ -56,10 +56,10 @@ class drawingAPI
         virtual void redraw()=0;
         virtual void refresh()=0;
         void setDataHolder(dataHolder * toThisOne){owner=toThisOne;};
-        virtual double getULCornerX(drawable * ofThisOne)=0;
-        virtual double getULCornerY(drawable * ofThisOne)=0;
-        virtual double getWidth(drawable * ofThisOne)=0;
-        virtual double getHeight(drawable * ofThisOne)=0;
+//        virtual double getULCornerX(drawable * ofThisOne)=0;
+  //      virtual double getULCornerY(drawable * ofThisOne)=0;
+    //    virtual double getWidth(drawable * ofThisOne)=0;
+      //  virtual double getHeight(drawable * ofThisOne)=0;
         virtual void updatesize()=0;
         virtual void resetView()=0;
         virtual void checksize()=0;

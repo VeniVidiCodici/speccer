@@ -113,10 +113,6 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
         ~OGLplotter();
         void redraw();
         void refresh();
-        double getULCornerX(drawable * ofThisOne);
-        double getULCornerY(drawable * ofThisOne);
-        double getWidth(drawable * ofThisOne);
-        double getHeight(drawable * ofThisOne);
         void updatesize();
         void resetView(bool refreshq);
         void resetView();
@@ -239,11 +235,16 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
         // essentially, four points connected with three lines
         // but this draws only the middle line!
         // begining and ending tell if the line is actually at either end
-        void linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
+        std::vector<vertex> linecon(double x0, double y0, double x1, double y1, double x2, double y2,
+            double w,double Cr, double Cg, double Cb, double a, bool begining, bool ending, double px, double py);
+
+        /*
+        std::vector<vertex> linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
             double w,
             double Cr, double Cg, double Cb,
             double Br, double Bg, double Bb,
             bool alphablend, bool begining, bool ending);
+        */
 
         /*a skimmed version of line(); no color, no thickness control
          * draws near-perfectly a black "hair line" of thickness 1px
