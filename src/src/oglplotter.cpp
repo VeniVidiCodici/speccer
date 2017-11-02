@@ -1096,8 +1096,8 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                 //applyTransformationHierarchy((matrixData *)drawnShape->getPropertyByName("tfmatrix"));
                 if (brdata!=nullptr)
                     break;
-                hair_line(-100,0,100,0,true);
-                hair_line(0,-100,0,100,true);
+                line_raw(-100,0,100,0);
+                line_raw(0,-100,0,100);
                 }
             break;
 
@@ -1129,13 +1129,13 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                         {
                             lx = 30*cos(i/c);
                             ly = 30*sin(i/c);
-                            hair_line(lxp, lyp, lx, ly, true);
+                            line_raw(lxp, lyp, lx, ly);
                             lxp = lx;
                             lyp = ly;
                         }
-                    hair_line(0,0,0+50,0);
-                    hair_line(0,0,0+47,0-20);
-                    hair_line(0,0,0+47,0+20);
+                    line_raw(0,0,0+50,0);
+                    line_raw(0,0,0+47,0-20);
+                    line_raw(0,0,0+47,0+20);
                     }
                 }
             break;
@@ -1163,15 +1163,15 @@ void OGLplotter::drawDrawable(drawable * drawn,Matrix Transform, bool globvar)
                         {
                             lx = 0+30*cos(i/c);
                             ly = 0+30*sin(i/c);
-                            hair_line(lxp, lyp, lx, ly, true);
+                            line_raw(lxp, lyp, lx, ly);
                             lxp = lx;
                             lyp = ly;
                         }
                     int om = 40;
-                    hair_line(0,0-40+om,0,0-80+om);
-                    hair_line(0,0-40+om,0-10,0-60+om);
-                    hair_line(0,0-40+om,0+10,0-60+om);
-                    hair_line(0-10,0-70+om,0+10,0-70+om);
+                    line_raw(0,0-40+om,0,0-80+om);
+                    line_raw(0,0-40+om,0-10,0-60+om);
+                    line_raw(0,0-40+om,0+10,0-60+om);
+                    line_raw(0-10,0-70+om,0+10,0-70+om);
                 }
                 }
             break;
@@ -2506,24 +2506,10 @@ vertex OGLplotter::applyTransformationHierarchyToVertexNoFirst(vertex v, matrixD
 void OGLplotter::oglLine(std::vector<vertex> points, double width)
 {
     oglLine(points, width, false);
-    /*return;
-    double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
-    double x0,y0,x1,y1,x2,y2,x3,y3;
-    int s = points.size();
-    if (s<2) return;
-    if (s % 2 == 1)
-        s-=1;
-    for(int i=0;i<s-1;i+=2)
-    {
-        line(points[i].x, points[i].y,
-                points[i+1].x, points[i+1].y,
-                width,r,g,b,a,0.0,0.0,true);
-    }*/
 }
 
 void OGLplotter::oglLine(std::vector<vertex> points, double width, bool loop)
 {
-    //return;
     double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
     int s = points.size();
     if (s<2) return;
@@ -2548,7 +2534,7 @@ void OGLplotter::oglLine(std::vector<vertex> points, double width, bool loop)
             todraw.insert(todraw.end(), temp.begin(), temp.end());
         }
         temp = linecon(points[s-2].x, points[s-2].y,points[s-1].x, points[s-1].y,0, 0,
-                    width,r,g,b,a,false,true, todraw[s*2-5].x,todraw[s*2-5].y);
+                    width,r,g,b,a,false,true, todraw[s*2-3].x,todraw[s*2-3].y);
         todraw.insert(todraw.end(), temp.begin(), temp.end());
     }
     else
@@ -2560,133 +2546,28 @@ void OGLplotter::oglLine(std::vector<vertex> points, double width, bool loop)
         todraw.insert(todraw.end(), temp.begin(), temp.end());
         for(int i=1;i<s-1;i++)
         {
-            //int os=1;
-            //if (i==s-2)
-            //    os=2;
-            int os = (i==s-2) ? 2 : 1;
             temp = linecon(points[i-1].x, points[i-1].y,
                     points[i].x, points[i].y,
                     points[i+1].x, points[i+1].y,
-                    width,r,g,b,i*a/s,false,false,
-                    todraw[2*i-os].x,todraw[2*i-os].y);
+                    width,r,g,b,a,false,false,
+                    todraw[2*i-1].x,todraw[2*i-1].y);
             todraw.insert(todraw.end(), temp.begin(), temp.end());
         }
         temp = linecon(points[s-2].x, points[s-2].y,
                 points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                 width,r,g,b,a,false,false,
-                todraw[s*2-5].x,todraw[s*2-5].y);
+                todraw[s*2-3].x,todraw[s*2-3].y);
         todraw.insert(todraw.end(), temp.begin(), temp.end());
         temp = linecon(points[s-1].x, points[s-1].y,
                 points[0].x, points[0].y,
                 points[1].x, points[1].y,
                 width,r,g,b,a,false,false,
-                todraw[s*2-3].x,todraw[s*2-3].y);
-        todraw.insert(todraw.end(), temp.begin(), temp.end());
-    }
-    ogldraw(GL_TRIANGLE_STRIP,todraw);
-}/*
-void OGLplotter::addLineToDraw(std::vector<vertex> line)
-{
-    drawableLines.insert(drawableLines.end(), line.begin(), line.end());
-    if (drawableLines.size()>=30000)
-        forceDrawLines();
-}
-void OGLplotter::forceDrawLines()
-{
-    ogldraw(GL_TRIANGLE_STRIP,drawableLines);
-    drawableLines.clear();
-}*/
-
-/*
-
-void OGLplotter::oglLine(std::vector<vertex> points, double width, bool loop)
-{
-    //return;
-    double r=points[0].r,b=points[0].b,g=points[0].g,a=points[0].a;
-    int s = points.size();
-    if (s<2) return;
-    std::vector<vertex> todraw, temp;
-    if (s==2)
-    {
-        line(points[0].x, points[0].y, points[1].x, points[1].y,width,r,g,b,a,0.0,0.0,true);
-        return;
-    }
-    else if (s==3)
-    {
-        if (!loop)
-        {
-            todraw = linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
-                    width,r,g,b,a,0.0,0.0,true,true,false);
-
-            temp = linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,0.0,0.0,
-                    width,r,g,b,a,0.0,0.0,true,false,true);
-            todraw.insert(todraw.end(), temp.begin(), temp.end());
-        }
-        else
-        {
-            todraw = linecon(points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
-            temp = linecon(points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
-            todraw.insert(todraw.end(), temp.begin(), temp.end());
-            temp = linecon(points[1].x, points[1].y,points[2].x, points[2].y,points[0].x, points[0].y,points[1].x, points[1].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
-            todraw.insert(todraw.end(), temp.begin(), temp.end());
-        }
-    }
-    else
-    if (!loop)
-    {
-        todraw = linecon(0.0,0.0,points[0].x, points[0].y,points[1].x, points[1].y,points[2].x, points[2].y,
-                    width,r,g,b,a,0.0,0.0,true,true,false);
-        for(int i=1;i<s-2;i++)
-        {
-            temp = linecon(points[i-1].x, points[i-1].y,
-                    points[i].x, points[i].y,
-                    points[i+1].x, points[i+1].y,
-                    points[i+2].x, points[i+2].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
-            todraw.insert(todraw.end(), temp.begin(), temp.end());
-        }
-        temp = linecon(points[s-3].x, points[s-3].y,points[s-2].x, points[s-2].y,points[s-1].x, points[s-1].y,0.0,0.0,
-                    width,r,g,b,a,0.0,0.0,true,false,true);
-        todraw.insert(todraw.end(), temp.begin(), temp.end());
-    }
-    else
-    {
-        todraw = linecon(points[s-1].x, points[s-1].y,
-                points[0].x, points[0].y,
-                points[1].x, points[1].y,
-                points[2].x, points[2].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
-        for(int i=1;i<s-2;i++)
-        {
-            temp = linecon(points[i-1].x, points[i-1].y,
-                    points[i].x, points[i].y,
-                    points[i+1].x, points[i+1].y,
-                    points[i+2].x, points[i+2].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
-            todraw.insert(todraw.end(), temp.begin(), temp.end());
-        }
-        temp = linecon(points[s-3].x, points[s-3].y,
-                points[s-2].x, points[s-2].y,
-                points[s-1].x, points[s-1].y,
-                points[0].x, points[0].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
-        todraw.insert(todraw.end(), temp.begin(), temp.end());
-        temp = linecon(points[s-2].x, points[s-2].y,
-                points[s-1].x, points[s-1].y,
-                points[0].x, points[0].y,
-                points[1].x, points[1].y,
-                    width,r,g,b,a,0.0,0.0,true,false,false);
+                todraw[s*2-1].x,todraw[s*2-1].y);
         todraw.insert(todraw.end(), temp.begin(), temp.end());
     }
     ogldraw(GL_TRIANGLE_STRIP,todraw);
 }
-
-
-*/
 
 void OGLplotter::resetView()
 {
@@ -2856,259 +2737,6 @@ void OGLplotter::mouseReleased(wxMouseEvent& event)
 }
 double OGLplotter::GET_ABS(double x) {return x>0?x:-x;}
 
-
-/* Drawing nearly perfect 2D line segments in OpenGL
- * You can use this code however you want.
- * I just hope you to cite my name and the page of this technique:
- * http://artgrammer.blogspot.com/2011/05/drawing-nearly-perfect-2d-line-segments.html
- * http://www.codeproject.com/KB/openGL/gllinedraw.aspx
- *
- * Enjoy. Chris Tsang.*/
-
-// some functions are modified, extended or added
-// used under The Code Project Open License (CPOL): https://www.codeproject.com/info/cpol10.aspx
-
-void OGLplotter::line( double x1, double y1, double x2, double y2, //coordinates of the line
-	double w,			//width/thickness of the line in pixel
-	double Cr, double Cg, double Cb,	//RGB color components
-	double Br, double Bg, double Bb,	//color of background when alphablend=false,
-					//  Br=alpha of color when alphablend=true
-	bool alphablend)		//use alpha blend or not
-{
-	double t;//thickness
-	double R;//edge
-	double f=w-static_cast<int>(w);//the fractional part of the width
-	double A;
-
-	if ( alphablend)
-		A=Br;
-	else
-		A=1.0;
-
-	//determine parameters t,R
-	/*   */if ( w>=0.0 && w<1.0) {
-		t=0.05; R=0.48+0.32*f;
-		if ( !alphablend) {
-			Cr+=0.88*(1-f);
-			Cg+=0.88*(1-f);
-			Cb+=0.88*(1-f);
-			if ( Cr>1.0) Cr=1.0;
-			if ( Cg>1.0) Cg=1.0;
-			if ( Cb>1.0) Cb=1.0;
-		} else {
-			A*=f;
-		}
-	} else if ( w>=1.0 && w<2.0) {
-		t=0.05+f*0.33; R=0.768+0.312*f;
-	} else if ( w>=2.0 && w<3.0){
-		t=0.38+f*0.58; R=1.08;
-	} else if ( w>=3.0 && w<4.0){
-		t=0.96+f*0.48; R=1.08;
-	} else if ( w>=4.0 && w<5.0){
-		t=1.44+f*0.46; R=1.08;
-	} else if ( w>=5.0 && w<6.0){
-		t=1.9+f*0.6; R=1.08;
-	} else if ( w>=6.0){
-		double ff=w-6.0;
-		t=2.5+ff*0.50; R=1.08;
-	}
-	R*=scale;
-
-	//determine angle of the line to horizontal
-	double tx=0,ty=0; //core thinkness of a line
-	double Rx=0,Ry=0; //fading edge of a line
-	double cx=0,cy=0; //cap of a line
-	double ALW=0.01;
-	double dx=x2-x1;
-	double dy=y2-y1;
-	if ( GET_ABS(dx) < ALW) {
-		//vertical
-		tx=t; ty=0;
-		Rx=R; Ry=0;
-		if ( w>0.0 && w<=1.0) {
-			tx = 0.5; Rx=0.0;
-		}
-	} else if ( GET_ABS(dy) < ALW) {
-		//horizontal
-		tx=0; ty=t;
-		Rx=0; Ry=R;
-		if ( w>0.0 && w<=1.0) {
-			ty = 0.5; Ry=0.0;
-		}
-	} else {
-		if ( w < 3) { //approximate to make things even faster
-			double m=dy/dx;
-			//and calculate tx,ty,Rx,Ry
-			if ( m>-0.4142 && m<=0.4142) {
-				// -22.5< angle <= 22.5, approximate to 0 (degree)
-				tx=t*0.1; ty=t;
-				Rx=R*0.6; Ry=R;
-			} else if ( m>0.4142 && m<=2.4142) {
-				// 22.5< angle <= 67.5, approximate to 45 (degree)
-				tx=t*-0.7071; ty=t*0.7071;
-				Rx=R*-0.7071; Ry=R*0.7071;
-			} else if ( m>2.4142 || m<=-2.4142) {
-				// 67.5 < angle <=112.5, approximate to 90 (degree)
-				tx=t; ty=t*0.1;
-				Rx=R; Ry=R*0.6;
-			} else if ( m>-2.4142 && m<-0.4142) {
-				// 112.5 < angle < 157.5, approximate to 135 (degree)
-				tx=t*0.7071; ty=t*0.7071;
-				Rx=R*0.7071; Ry=R*0.7071;
-			} else {
-				// error in determining angle
-				//printf( "error in determining angle: m=%.4f\n",m);
-			}
-		} else { //calculate to exact
-			dx=y1-y2;
-			dy=x2-x1;
-			double L=sqrt(dx*dx+dy*dy);
-			dx/=L;
-			dy/=L;
-			cx=-dy; cy=dx;
-			tx=t*dx; ty=t*dy;
-			Rx=R*dx; Ry=R*dy;
-		}
-	}
-
-
-	x1+=cx*0.5; y1+=cy*0.5;
-	x2-=cx*0.5; y2-=cy*0.5;
-
-	//draw the line by triangle strip
-	double line_vertex[]=
-	{
-		x1-tx-Rx-cx, y1-ty-Ry-cy, //fading edge1
-		x2-tx-Rx+cx, y2-ty-Ry+cy,
-		x1-tx-cx,y1-ty-cy,	  //core
-		x2-tx+cx,y2-ty+cy,
-		x1+tx-cx,y1+ty-cy,
-		x2+tx+cx,y2+ty+cy,
-		x1+tx+Rx-cx, y1+ty+Ry-cy, //fading edge2
-		x2+tx+Rx+cx, y2+ty+Ry+cy
-	};
-
-	//glVertexPointer(2, GL_FLOAT, 0, line_vertex);
-	std::vector<vertex> p;
-
-	if ( !alphablend) {
-		double line_color[]=
-		{
-			Br,Bg,Bb,
-			Br,Bg,Bb,
-			Cr,Cg,Cb,
-			Cr,Cg,Cb,
-			Cr,Cg,Cb,
-			Cr,Cg,Cb,
-			Br,Bg,Bb,
-			Br,Bg,Bb
-		};
-		//glColorPointer(3, GL_FLOAT, 0, line_color);
-		for(int i=0;i<8;i++)
-            p.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*3],line_color[i*3+1],line_color[i*3+2]));
-	} else {
-		double line_color[]=
-		{
-			Cr,Cg,Cb,0,
-			Cr,Cg,Cb,0,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,A,
-			Cr,Cg,Cb,0,
-			Cr,Cg,Cb,0
-		};
-		for(int i=0;i<8;i++)
-            p.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*4],line_color[i*4+1],line_color[i*4+2],line_color[i*4+3]));
-		//glColorPointer(4, GL_FLOAT, 0, line_color);
-	}
-
-	ogldraw(GL_TRIANGLE_STRIP,p);
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
-
-	//cap
-	if ( w < 3) {
-		//do not draw cap
-	} else {
-	    std::vector<vertex> p2, p3;
-		//draw cap
-		double line_vertex[]=
-		{
-			x1-tx-Rx-cx, y1-ty-Ry-cy, //cap1
-			x1-tx-Rx, y1-ty-Ry,
-			x1-tx-cx, y1-ty-cy,
-			x1+tx+Rx, y1+ty+Ry,
-			x1+tx-cx, y1+ty-cy,
-			x1+tx+Rx-cx, y1+ty+Ry-cy,
-			x2-tx-Rx+cx, y2-ty-Ry+cy, //cap2
-			x2-tx-Rx, y2-ty-Ry,
-			x2-tx+cx, y2-ty+cy,
-			x2+tx+Rx, y2+ty+Ry,
-			x2+tx+cx, y2+ty+cy,
-			x2+tx+Rx+cx, y2+ty+Ry+cy
-		};
-
-		//glVertexPointer(2, GL_FLOAT, 0, line_vertex);
-
-		if ( !alphablend) {
-			double line_color[]=
-			{
-				Br,Bg,Bb, //cap1
-				Br,Bg,Bb,
-				Cr,Cg,Cb,
-				Br,Bg,Bb,
-				Cr,Cg,Cb,
-				Br,Bg,Bb,
-				Br,Bg,Bb, //cap2
-				Br,Bg,Bb,
-				Cr,Cg,Cb,
-				Br,Bg,Bb,
-				Cr,Cg,Cb,
-				Br,Bg,Bb
-			};
-			for(int i=0;i<6;i++)
-            p2.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*3],line_color[i*3+1],line_color[i*3+2]));
-            for(int i=6;i<12;i++)
-            p3.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*3],line_color[i*3+1],line_color[i*3+2]));
-			//glColorPointer(3, GL_FLOAT, 0, line_color);
-		} else {
-			double line_color[]=
-			{
-				Cr,Cg,Cb, 0, //cap1
-				Cr,Cg,Cb, 0,
-				Cr,Cg,Cb, A,
-				Cr,Cg,Cb, 0,
-				Cr,Cg,Cb, A,
-				Cr,Cg,Cb, 0,
-				Cr,Cg,Cb, 0, //cap2
-				Cr,Cg,Cb, 0,
-				Cr,Cg,Cb, A,
-				Cr,Cg,Cb, 0,
-				Cr,Cg,Cb, A,
-				Cr,Cg,Cb, 0
-			};
-			for(int i=0;i<6;i++)
-            p2.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*4],line_color[i*4+1],line_color[i*4+2],line_color[i*4+3]));
-            for(int i=6;i<12;i++)
-            p3.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*4],line_color[i*4+1],line_color[i*4+2],line_color[i*4+3]));
-			//glColorPointer(4, GL_FLOAT, 0, line_color);
-		}
-		ogldraw(GL_TRIANGLE_STRIP,p2);
-		ogldraw(GL_TRIANGLE_STRIP,p3);
-		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
-		//glDrawArrays(GL_TRIANGLE_STRIP, 6, 6);
-	}
-
-
-}
-
-
 std::vector<vertex> OGLplotter::linecon(double x0, double y0, double x1, double y1, double x2, double y2,
             double w,double Cr, double Cg, double Cb, double a, bool begining, bool ending, double px, double py)
 {
@@ -3147,13 +2775,13 @@ std::vector<vertex> OGLplotter::linecon(double x0, double y0, double x1, double 
                        /(1 - z*z)
                        )/(r01+r12);
     double o = rx/r20; // the ratio in which 1's bisector cuts the line from point 0 to point 2
-    double xs = ((1-o)*x0+o*x2)/2;//coordinates where the cut happens
-    double ys = ((1-o)*y0+o*y2)/2;
+    double xs = (1-o)*x0+o*x2;//coordinates where the cut happens
+    double ys = (1-o)*y0+o*y2;
     double ds1 = sqrt( (xs-x1)*(xs-x1) + (ys-y1)*(ys-y1) );//distance between that point and point 1
     double dxs1 = (xs - x1)/ds1;//the unit vector of the bisector
     double dys1 = (ys - y1)/ds1;
-    double tx = w*dxs1/2;//the unit vector times the width of the line we want
-    double ty = w*dys1/2;
+    double tx = w*dys1/2;//the unit vector times the width of the line we want
+    double ty = w*dxs1/2;
     double testx = x1-ty,testy = y1-tx;//need this to test if the points zigzag along the polygon
 
     //if the new line crosses the old one, flip the sides
@@ -3166,135 +2794,32 @@ std::vector<vertex> OGLplotter::linecon(double x0, double y0, double x1, double 
     p.push_back(vertex(x1+ty, y1+tx, Cr,Cg,Cb,a));
     p.push_back(vertex(x1-ty, y1-tx, Cr,Cg,Cb,a));
     return p;
-
-    /*
-    double ys = (x0+x2)/2;//x
-    double xs = (y0+y2)/2;//y
-    double ds1 = sqrt( (xs-x1)*(xs-x1) + (ys-y1)*(ys-y1) );
-    if (ds1 < 0.01)
-        ds1=1;
-    double dxs1 = (x1 - xs)/ds1;//x
-    double dys1 = (y1 - ys)/ds1;//y
-    double tx = -w*dxs1/2;//x
-    double ty = -w*dys1/2;//y
-    double testx = x1-ty,//x
-    testy = y1-tx;//y
-*/
 }
 
-/*a skimmed version of line(); no color, no thickness control
- * draws near-perfectly a black "hair line" of thickness 1px
- * when alphablend is false, it assumes drawing on a white surface
- * when alphablend is true, it draws with alpha */
- void OGLplotter::hair_line( double x1, double y1, double x2, double y2)
- {
-     hair_line(x1,y1,x2,y2,true);
- }
-void OGLplotter::hair_line( double x1, double y1, double x2, double y2, bool alphablend)
-{
-	double t=0.05; double R=0.768;
-//	double C=0.0;
-
-	//determine angle of the line to horizontal
-	double tx=0,ty=0, Rx=0,Ry=0;
-	double ALW=0.01;
-	double dx=x2-x1;
-	double dy=y2-y1;
-	if ( GET_ABS(dx) < ALW) {
-		//vertical
-		tx = 0.5; ty = 0.0;
-		Rx = 0.0; Ry = 0.0;
-	} else if ( GET_ABS(dy) < ALW) {
-		//horizontal
-		tx = 0.0; ty = 0.5;
-		Rx = 0.0; Ry = 0.0;
-	} else {
-		double m=dy/dx;
-		if ( m>-0.4142 && m<=0.4142) {
-			// -22.5< angle <= 22.5, approximate to 0 (degree)
-			tx=t*0.1; ty=t;
-			Rx=R*0.6; Ry=R;
-		} else if ( m>0.4142 && m<=2.4142) {
-			// 22.5< angle <= 67.5, approximate to 45 (degree)
-			tx=t*-0.7071; ty=t*0.7071;
-			Rx=R*-0.7071; Ry=R*0.7071;
-		} else if ( m>2.4142 || m<=-2.4142) {
-			// 67.5 < angle <=112.5, approximate to 90 (degree)
-			tx=t; ty=t*0.1;
-			Rx=R; Ry=R*0.6;
-		} else if ( m>-2.4142 && m<-0.4142) {
-			// 112.5 < angle < 157.5, approximate to 135 (degree)
-			tx=t*0.7071; ty=t*0.7071;
-			Rx=R*0.7071; Ry=R*0.7071;
-		}
-	}
-
-	//draw the line by triangle strip
-	double line_vertex[]=
-	{
-		x1-tx-Rx, y1-ty-Ry,	//fading edge1
-		x2-tx-Rx, y2-ty-Ry,
-		x1-tx,y1-ty,		//core
-		x2-tx,y2-ty,
-		x1+tx,y1+ty,
-		x2+tx,y2+ty,
-		x1+tx+Rx, y1+ty+Ry,	//fading edge2
-		x2+tx+Rx, y2+ty+Ry
-	};
-	//glVertexPointer(2, GL_FLOAT, 0, line_vertex);
-
-	std::vector<vertex> p;
-	if ( !alphablend) {
-		double line_color[]=
-		{	1,1,1,
-			1,1,1,
-			0,0,0,
-			0,0,0,
-			0,0,0,
-			0,0,0,
-			1,1,1,
-			1,1,1
-		};
-		for(int i=0;i<8;i++)
-            p.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*3],line_color[i*3+1],line_color[i*3+2]));
-		//glColorPointer(3, GL_FLOAT, 0, line_color);
-	} else {
-		double line_color[]=
-		{	0,0,0,0,
-			0,0,0,0,
-			0,0,0,1,
-			0,0,0,1,
-			0,0,0,1,
-			0,0,0,1,
-			0,0,0,0,
-			0,0,0,0
-		};
-		for(int i=0;i<8;i++)
-            p.push_back(vertex(line_vertex[i*2],line_vertex[i*2+1],
-                               line_color[i*4],line_color[i*4+1],line_color[i*4+2],line_color[i*4+3]));
-		//glColorPointer(4, GL_FLOAT, 0, line_color);
-	}
-
-	ogldraw(GL_TRIANGLE_STRIP,p);
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
-}
-
-/*as a fall back to line()*/
 void OGLplotter::line_raw( double x1, double y1, double x2, double y2,
 	double w,
 	double Cr, double Cg, double Cb)
 {
-    PFNGLDRAWARRAYSEXTPROC glDrawArraysEXT;
-    glDrawArraysEXT = (PFNGLDRAWARRAYSEXTPROC) glXGetProcAddress(
-                                reinterpret_cast<const GLubyte*>("glDrawArraysEXT"));
-	glLineWidth(w);
-	std::vector<vertex> p;
+    std::vector<vertex> p;
 	p.push_back(vertex(x1,y1,Cr,Cg,Cb));
 	p.push_back(vertex(x2,y2,Cr,Cg,Cb));
-	ogldraw(GL_LINES,p);
+	oglLine(p,w);
 }
-
+void OGLplotter::line_raw( double x1, double y1, double x2, double y2,
+            double Cr, double Cg, double Cb)
+{
+    std::vector<vertex> p;
+	p.push_back(vertex(x1,y1,Cr,Cg,Cb));
+	p.push_back(vertex(x2,y2,Cr,Cg,Cb));
+	oglLine(p,1);
+}
+void OGLplotter::line_raw( double x1, double y1, double x2, double y2)
+{
+    std::vector<vertex> p;
+	p.push_back(vertex(x1,y1,0,0,0));
+	p.push_back(vertex(x2,y2,0,0,0));
+	oglLine(p,1);
+}
 
 
 

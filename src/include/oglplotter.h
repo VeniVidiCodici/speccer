@@ -212,61 +212,17 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
 
         bool run;
 
-        //std::vector<vertex> drawableLines;
-        //void addLineToDraw(std::vector<vertex> line);
-        //void forceDrawLines();
-
-        /* Drawing nearly perfect 2D line segments in OpenGL
-         * You can use this code however you want.
-         * I just hope you to cite my name and the page of this technique:
-         * http://artgrammer.blogspot.com/2011/05/drawing-nearly-perfect-2d-line-segments.html
-         * http://www.codeproject.com/KB/openGL/gllinedraw.aspx
-         *
-         * Enjoy. Chris Tsang.*/
-
-         // used under The Code Project Open License (CPOL): https://www.codeproject.com/info/cpol10.aspx
-
         double GET_ABS(double x);
-        /*
-         * this implementation uses vertex array (opengl 1.1)
-         *   choose only 1 from vase_rend_draft_1.h and vase_rend_draft_2.h
-         *   to your need. if you have no preference, just use vase_rend_draft_2.h
-         */
-        void line( double x1, double y1, double x2, double y2, //coordinates of the line
-            double w,			//width/thickness of the line in pixel
-            double Cr, double Cg, double Cb,	//RGB color components
-            double Br, double Bg, double Bb,	//color of background when alphablend=false,
-                            //  Br=alpha of color when alphablend=true
-            bool alphablend);		//use alpha blend or not
 
-        // a line connected with two other lines
-        // essentially, four points connected with three lines
-        // but this draws only the middle line!
-        // begining and ending tell if the line is actually at either end
         std::vector<vertex> linecon(double x0, double y0, double x1, double y1, double x2, double y2,
             double w,double Cr, double Cg, double Cb, double a, bool begining, bool ending, double px, double py);
 
-        /*
-        std::vector<vertex> linecon(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
-            double w,
-            double Cr, double Cg, double Cb,
-            double Br, double Bg, double Bb,
-            bool alphablend, bool begining, bool ending);
-        */
-
-        /*a skimmed version of line(); no color, no thickness control
-         * draws near-perfectly a black "hair line" of thickness 1px
-         * when alphablend is false, it assumes drawing on a white surface
-         * when alphablend is true, it draws with alpha */
-        void hair_line( double x1, double y1, double x2, double y2, bool alphablend);
-        void hair_line( double x1, double y1, double x2, double y2);
-
-        /*as a fall back to line()*/
         void line_raw( double x1, double y1, double x2, double y2,
             double w,
             double Cr, double Cg, double Cb);
-
-
+        void line_raw( double x1, double y1, double x2, double y2,
+            double Cr, double Cg, double Cb);
+        void line_raw( double x1, double y1, double x2, double y2);
         DECLARE_EVENT_TABLE()
 
 };
