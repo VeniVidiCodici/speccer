@@ -44,6 +44,7 @@
 #include <iomanip> // setprecision
 #include <sstream> // stringstream
 #include <iostream> // for diagnostic purposes
+//#include <../ftgl/FTGL/ftgl.h>
 
 /*Creating code
 <resource>
@@ -168,6 +169,7 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
 
         bool FTInit, FTFaceInit, ILInit;
         FT_Library FTLib;
+        //FTGLPixmapFont FTFace{"sa"}, currentFace{"sh"}, initFace{"e"};
         FT_Face FTFace, currentFace, initFace;
         branch * brdata;
 
@@ -178,6 +180,8 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
         bool pvflag, ivflag, tvflag;
 
         std::map<std::string, FT_Face> ftfaces;
+        //std::map<std::string, FTGLPixmapFont> ftfaces;
+        //std::map<std::string, FTGLPixmapFont*> ftfaces;
         std::map<std::string, bool> ftfacesinit;
 
         void initARBs();
@@ -207,6 +211,10 @@ class OGLplotter : public wxGLCanvas, public drawingAPI
         PFNGLENABLECLIENTSTATEIEXTPROC glEnableClientStateiEXT;
 
         bool run;
+
+        //std::vector<vertex> drawableLines;
+        //void addLineToDraw(std::vector<vertex> line);
+        //void forceDrawLines();
 
         /* Drawing nearly perfect 2D line segments in OpenGL
          * You can use this code however you want.
