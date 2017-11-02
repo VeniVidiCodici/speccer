@@ -28,6 +28,10 @@ formulaData::formulaData(std::string _name,std::string value, std::string _promp
     name=_name;
     constant=false;
     property=false;
+
+    cache = 10.0;
+    cachedData = "";
+    first = true;
 }
 
 formulaData::~formulaData()
@@ -44,6 +48,17 @@ std::string formulaData::getData()
 {
     return data;
 }
+
+void formulaData::setCachedData(std::string value)
+{
+    cachedData = value;
+}
+
+std::string formulaData::getCachedData()
+{
+    return cachedData;
+}
+
 void formulaData::updateDependency()
 {
     data = ((formulaData*)dependedOn)->data;
@@ -76,8 +91,20 @@ std::string formulaData::load(std::ifstream& _in, std::string version)
         prompt = rs(_in);
         surfaceName = rs(_in);
         data = rs(_in);
+
+        first = true;
+        cache = 10.0;
+        cachedData = "";
     }
     else
         return "Unsupported program version.";
     return "";
+}
+void formulaData::setCache(double c)
+{
+    cache = c;
+}
+double formulaData::getCache()
+{
+    return cache;
 }

@@ -32,6 +32,8 @@ branch::branch(int i, tree * arg)
     x = y = n= w = h = sc= sw= sh= dc= dw= dh= udc= udw= udh =rootx=rooty=0;
     parent = nullptr;
     saved = false;
+
+//    cacheHash = "";
 }
 
 branch::~branch()
@@ -542,14 +544,14 @@ void branch::calculateMetrics(int _n, shape * bboxShape, formulaParser * f, draw
         if (dp!=nullptr)
         if (dp->getType()==dataPoint::formula)
         {
-            w = f->parse(((formulaData *)dp)->getData());
+            w = f->parse(((formulaData *)dp));
         }
 
         dp = bboxShape->getPropertyByName("height");
         if (dp!=nullptr)
         if (dp->getType()==dataPoint::formula)
         {
-            h = f->parse(((formulaData *)dp)->getData());
+            h = f->parse(((formulaData *)dp));
         }
         // the formulas should be constant
     }

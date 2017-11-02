@@ -206,13 +206,69 @@ std::string formulaParser::applyTagsToText(std::string input,
             A _ B - returns the min of A, B
     */
 
-double formulaParser::parse(std::string expression, bool useGlobalVariables)
+double formulaParser::parsestring(std::string expression, bool useGlobalVariables)
 {
     useGlobVar = useGlobalVariables;
     input = expression;
     inputLength = input.length();
     inputIndex=0;
     return E();
+}
+double formulaParser::parse(formulaData * formula, bool useGlobalVariables)
+{
+    if (formula!=nullptr)
+    {
+        //if (currentNode==nullptr)
+            return parsestring(formula->getData(), useGlobalVariables);
+
+        ///not working this way - depsgraph??
+        std::map<formulaData *, double>::iterator it;
+        it = currentNode->cache.find(formula);
+            if (it == currentNode->cache.end())
+            {
+                useGlobVar = useGlobalVariables;
+                input = formula->getData();
+                inputLength = input.length();
+                inputIndex=0;
+                currentNode->cache[formula] = E();
+            }
+        return currentNode->cache[formula];
+/*
+        std::string Hash = currentNode->getCurrentHash();
+        if (Hash!=currentNode->cacheHash)
+        {
+
+        }
+        else
+        {
+            it = currentNode->cache.find(formula);
+            if (it == currentNode->cache.end())
+            {
+                useGlobVar = useGlobalVariables;
+                input = formula->getData();
+                inputLength = input.length();
+                inputIndex=0;
+                currentNode->cache[formula] = E();
+            }
+            return currentNode->cache[formula];
+        }
+
+
+        if (formula->getCachedData() == formula->getData() )
+            return formula->getCache();
+
+        useGlobVar = useGlobalVariables;
+        input = formula->getData();
+        inputLength = input.length();
+        inputIndex=0;
+        formula->setCache(E());
+        std::string p2 = formula->getCachedData();
+        formula->setCachedData(formula->getData());
+
+        formula->first = false;
+        return formula->getCache();*/
+    }
+    return 0.0;
 }
 double formulaParser::E()
     {
@@ -473,7 +529,7 @@ double formulaParser::F()
                 return 0.0;
             if (tempd->getType()!=dataPoint::formula)
                 return 0.0;
-            res = parse(((formulaData *)tempd)->getData(), true);
+            res = parse(((formulaData *)tempd), true);
         }
         else if (useGlobVar)
             res = strtod( dataRepo->getField(buffer,"0").c_str(), NULL);
@@ -484,7 +540,7 @@ double formulaParser::F()
                 return 0.0;
             if (tempd->getType()!=dataPoint::formula)
                 return 0.0;
-            res = parse(((formulaData *)tempd)->getData(), true);
+            res = parse(((formulaData *)tempd), true);
             }
             /// the second argument should tell if the upper level is composite or not
             /// to do: add this functionality

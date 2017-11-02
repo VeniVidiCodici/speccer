@@ -23,6 +23,7 @@
 #include "alldatatypes.h"
 #include <string>
 #include <vector>
+#include <map>
 #include "drawingapi.h"
 #include "shape.h"
 
@@ -138,6 +139,10 @@ class branch : public serialisable
         dataPoint * getProperty(std::string sk, dataPoint::type kind);
         dataPoint * getPropertyDontAdd(std::string sk, dataPoint::type kind);
         bool propertyExists(std::string sk, dataPoint::type kind);
+
+        std::map<formulaData *, double> cache;
+        //std::string cacheHash;
+        //std::string getCurrentHash();
     protected:
     private:
         int id, parentid;

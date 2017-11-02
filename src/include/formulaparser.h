@@ -25,6 +25,7 @@
 #include <map>
 #include <iostream>
 #include <exception>
+#include <formuladata.h>
 
 class branch;
 
@@ -33,7 +34,8 @@ class formulaParser
     public:
         formulaParser(bool actualGlobalVariables, dataHolder * _dataRepo);
         virtual ~formulaParser();
-        double parse(std::string expression, bool useGlobalVariables=true);
+        double parsestring(std::string expression, bool useGlobalVariables=true);
+        double parse(formulaData * formula, bool useGlobalVariables=true);
         bool isItCorrect(std::string expression, bool useGlobalVariables=true);
         void setDataHolder(dataHolder * _dataRepo);
         void setDrawnComposite(composite * c);

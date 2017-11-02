@@ -30,15 +30,22 @@ class formulaData : public dataPoint
         formulaData(std::string _name, std::string value, std::string _prompt);
         ~formulaData();
         void setData(std::string value);
+        void setCachedData(std::string value);
         std::string getData();
+        std::string getCachedData();
         void updateDependency();
         void duplicate();
 
+        void setCache(double c);
+        double getCache();
+
         std::string save(std::ofstream& _out);
         std::string load(std::ifstream& _in, std::string version);
+        bool first;
     protected:
     private:
-        std::string data;
+        std::string data, cachedData;
+        double cache;
 };
 
 #endif // FORMULADATA_H
